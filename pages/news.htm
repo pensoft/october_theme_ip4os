@@ -5,11 +5,6 @@ is_hidden = 0
 robot_index = "index"
 robot_follow = "follow"
 
-[related_articles]
-limit = 3
-thumb_width = 357
-thumb_height = 221
-
 [list]
 maxItems = 10
 templates = "template1"
@@ -135,6 +130,9 @@ $this['related'] = $related;
     {% if is_detail_page %}
     <div class="row single-news-item">
 
+        <div class="go_back mt-4 mb-4">
+            <a href="{{'news'|page}}">Back to news</a>
+        </div>
 
         <div class="col-xs-12">
             {% if article.cover %}
@@ -168,7 +166,7 @@ $this['related'] = $related;
 
     <div class="mt-4">
         <h2>Other news</h2>
-        {% component 'related_articles' %}
+        {% partial 'relatedarticles' related=related %}
     </div>
 
     {% else %}
@@ -202,19 +200,7 @@ $this['related'] = $related;
                     </div>
 
                 </div>
-<!--                <div class="col-md-4 col-xs-12 end-md center-xs">-->
-<!--                    <div class="clear-filter">-->
-<!--                        <a id="clearFilter" href="javascript:void(0);">{{'Clear filters' |_}}</a>-->
-<!--                    </div>-->
-<!--                    <div class="apply-filter">-->
-<!--                        <a id="applyFilter" class="btn btn-primary">{{'Apply filter' |_}}</a>-->
-<!--                    </div>-->
-<!--                </div>-->
         </div>
-
-
-<!--        <a href="{{ 'news'|page }}?categoryId={{ category.id }}">{{ category.name }}</a>-->
-<!--        {{ category.id == categoryId ? 'selected' : '' }}-->
 
         {% endif %}
     </div>
@@ -294,14 +280,8 @@ $this['related'] = $related;
                         updateNewsList();
                     }
                 }
-
             }
-
-
-
         });
-
-
 
 
         function updateNewsList() {

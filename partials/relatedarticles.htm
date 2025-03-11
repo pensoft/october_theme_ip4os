@@ -1,0 +1,30 @@
+<div class="row related_articles_news">
+{% for item in related %}
+<div class="col-md-4 col-xs-12 news-item center-xs center-md">
+    <div class="row news_column">
+        <a href="/news/{{item.slug}}">
+            {% if item.cover %}
+            <div class="news-image col-xs-12 center-xs">
+                <img class="news-img-top" src="{{item.cover.getThumb(357, 221, {'mode': 'crop'})}}">
+            </div>
+            {% endif %}
+        </a>
+        {% if item.external == 0 %}
+        <div class="internal_label">IP4OS News</div>
+        {% endif %}
+        <div class="news-container col-xs-12">
+            <div class="text-published">{{item.published_at|date("j M Y")}}</div>
+            <div class="news-title">
+                <a href="/news/{{item.slug}}"><h3 class="card-title">{{ item.title|length > 60 ? item.title|striptags|slice(0, 60)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : item.title|striptags|replace({"&nbsp;": " ", ".": ". "})  }}</h3></a>
+            </div>
+            <div class="row read-more-row">
+                <a class="read-more" href="/news/{{item.slug}}">{{'Read more' |_}}</a>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+{% endfor %}
+</div>
