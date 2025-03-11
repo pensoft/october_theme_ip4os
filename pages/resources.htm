@@ -1,0 +1,99 @@
+url = "/resources"
+layout = "default"
+title = "Resources"
+
+[siteSearchInclude]
+
+[jumbotron resources]
+jumbotron = "resources"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron testimonials]
+jumbotron = "testimonials"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron webinars]
+jumbotron = "webinars"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+==
+{% component 'siteSearchInclude' %}
+<div class="container800">
+{% component 'resources' %}
+    <div class="resources_tabs">
+        <div class="tab-container">
+            <div class="tab-wrap">
+                <span class="border"></span>
+                <ul>
+                    <li class="active"><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#webinars">Webinars</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="testimonials">
+        {% component 'testimonials' %}
+    </div>
+    <div class="row" id="webinars">
+        {% component 'webinars' %}
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var activePos = $('.tab-wrap .active').position();
+
+        function changePos() {
+            activePos = $('.tab-wrap .active').position();
+            $('.border').stop().css({
+                left: activePos.left,
+                width: $('.tab-wrap .active').width()
+            });
+        }
+
+        changePos();
+
+        function changeTab() {
+            var getTabId = $('.tab-wrap .active a').attr('tab-id');
+
+            $('.tab').stop().fadeOut(300, function () {
+                $(this).removeClass('active');
+            }).hide();
+
+            $('.tab[tab-id=' + getTabId + ']').stop().fadeIn(300, function () {
+                $(this).addClass('active');
+                animateTabHeight();
+            });
+        }
+
+        $('.tab-wrap a').on('click', function (e) {
+            e.preventDefault();
+            var tabId = $(this).attr('tab-id');
+
+            $('.tab-wrap a').stop().parent().removeClass('active');
+
+            $(this).stop().parent().addClass('active');
+
+            changePos();
+
+            tabCurrentItem = tabItems.filter('.active');
+
+            $('.tab').stop().fadeOut(300, function () {
+                $(this).removeClass('active');
+            }).hide();
+
+            $('.tab[tab-id="' + tabId + '"]').stop().fadeIn(300, function () {
+                $(this).addClass('active');
+                animateTabHeight();
+            });
+        });
+
+        var tabItems = $('.tab-wrap ul li');
+        var tabCurrentItem = tabItems.filter('.active');
+    });
+</script>

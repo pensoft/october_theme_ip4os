@@ -1,0 +1,143 @@
+url = "/partners"
+layout = "default"
+title = "Partners"
+is_hidden = 0
+robot_index = "index"
+robot_follow = "follow"
+header_image = "about.jpg"
+
+==
+<?php
+use Pensoft\Partners\Models\Partners;
+use Pensoft\Cardprofiles\Models\Profiles;
+
+function onStart(){
+	$this['partners'] =  Partners::where('type', 1)->get();
+$this['members'] = Profiles::where('category_id',  1)->get();
+
+$this['insider_members'] = new class {
+public function getIM($id) {
+return Profiles::where('partner_id', $id)->where('category_id',  1)->get();
+}
+};
+
+}
+
+function onPartners(){
+$this['partners'] = [];
+if(post('code')){
+$this['partners'] =  Partners::whereRaw('country_code ILIKE \'%'.post('code').'%\'')->where('type', 1)->get();
+}
+$this['insider_members'] = new class {
+public function getIM($id) {
+return Profiles::where('partner_id', $id)->where('category_id',  1)->get();
+}
+};
+}
+
+function onSinglePartner(){
+$this['partners'] = [];
+if(post('partner_id')){
+$this['partners'] =  Partners::where('id', post('partner_id'))->where('type', 1)->get();
+}
+$this['insider_members'] = new class {
+public function getIM($id) {
+return Profiles::where('partner_id', $id)->where('category_id',  1)->get();
+}
+};
+}
+?>
+==
+<div class="container">
+
+
+    <div id="listView" class="accordion-insider-members-list">
+        {% for partner in partners %}
+        <div class="col-xs-12 partner-item">
+            <div class="row middle-xs">
+                <div class="col-xs-12 col-md-2 start-md center-xs partner_cover"><img src="{{partner.cover.thumb(156, auto, {mode: 'crop'})}}"></div>
+                <div class="col-xs-12 col-md-7 start-md center-xs partner_title"></div>
+                <div class="col-xs-12 col-md-3 end-md start-xs partner_link"><a href="{{partner.instituion_url}}" class="btn btn-primary" target="_blank">Visit website</a></div>
+
+                <div class="col-xs-12 partner_detailed_info">
+                {% if partner.content %}
+                <div class="partner_description">
+                    <div class="accordion-border key_{{key}}"><!-- 1 --><!-- css 1 -->
+                        <div class="row middle-xs accordion-toggle">
+                            <div class="col-xs start-xs">About</div>
+
+                            <div class="col-xs-2 end-xs plusminus"><span class="plus"></span></div>
+                        </div>
+
+                        <div class="accordion-content" style="display: none;">
+                            {{partner.content|raw}}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+
+                {% if partner.add_description %}
+                <div class="partner_description">
+                    <div class="accordion-border key_{{key}}"><!-- 1 --><!-- css 1 -->
+                        <div class="row middle-xs accordion-toggle">
+                            <div class="col-xs start-xs">Role in IP4OS</div>
+
+                            <div class="col-xs-2 end-xs plusminus"><span class="plus"></span></div>
+                        </div>
+
+                        <div class="accordion-content" style="display: none;">
+                            {{partner.add_description|raw}}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+
+
+                {% if insider_members.getIM(partner.id).count > 0 %}
+                <div class="partner_description">
+                    <div class="accordion-border">
+                        <div class="row middle-xs accordion-toggle">
+                            <div class="col-xs start-xs">Project members</div>
+
+                            <div class="col-xs-2 end-xs plusminus"><span class="plus"></span></div>
+                        </div>
+
+                        <div class="accordion-content" style="display: none;">
+                                {% for profile in insider_members.getIM(partner.id) %}
+                                    <div class="contact_info row">
+                                        <div class="col-md-2 col-xs-12 coordinator_image">
+                                            {% if profile.avatar %}
+                                            <img alt="{{ profile.names }}" src="{{profile.avatar|crop_image}}">
+                                            {% else %}
+                                            <img alt="{{ profile.names }}" src="{{ 'avatar.svg'|media }}" width="160" height="160" class="no-image">
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-10 col-xs-12 coordinator_info">
+                                            <div class="mb-1">
+                                                <h3>{{ profile.names }}</h3>
+                                                {% if profile.email %} <div class="email"><a href="mailto:{{ profile.email }}" target="_blank">{{ profile.email }}</a></div>{% endif %}
+                                                {% if profile.position %} <div class="">{{ profile.position }}</div>{% endif %}
+                                                {% if profile.department %} <div class="">{{ profile.department }}</div>{% endif %}
+                                            </div>
+
+                                            <div class="body" style="display: none;">{{ profile.content|raw }}</div>
+                                            <p class="read-more" onclick="expandBiography(this);">Biography</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+    </div>
+
+</div>

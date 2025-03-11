@@ -1,0 +1,84 @@
+url = "/library"
+layout = "default"
+title = "Knowledge library"
+is_hidden = 0
+robot_index = "index"
+robot_follow = "follow"
+
+[KnowledgeLibraryList]
+==
+<?php
+use Pensoft\Knowledgelibrary\Models\Format;
+use Pensoft\Knowledgelibrary\Models\Project;
+use Pensoft\Knowledgelibrary\Models\Data;
+
+function onStart(){
+    $this['formats'] = Format::get();
+    $this['projects'] = Project::get();
+    $this['records'] = Data::orderBy('date', 'desc')->orderBy('title', 'asc')->get();
+}
+?>
+==
+<div class="container">
+    <div class="record-search mb-2">
+        <div class="row">
+            <div class="col-xs-12 search-field-container">
+                <div class="search-field">
+                    <select multiple id="searchInput" name="searchTerms">
+                        <option value="">{{'Search' |_}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 filter-fields-container">
+                <div class="row between-md around-xs">
+                    <div class="col-md-8 col-xs-12 start-md center-xs">
+                        <div class="sort-field sort-dropdown">
+                            <select id="sortFormat" name="sortFormat">
+                                <option value="0">{{'All formats' |_}}</option>
+                                {% for format in formats %}
+                                <option value="{{format.id}}">{{format.title}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="sort-field sort-dropdown">
+                            <select id="sortProject" name="sortProject">
+                                <option value="0">{{'All projects' |_}}</option>
+                                {% for project in projects %}
+                                <option value="{{project.id}}">{{project.title}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="sort-field">
+                              <input
+                                  type="text"
+                                  class="datepicker-input"
+                                  id="dateFrom"
+                                  name="dateFrom"
+                                    placeholder="YYYY-MM-DD">
+                            -
+                              <input
+                                  type="text"
+                                  class="datepicker-input"
+                                  id="dateTo"
+                                  name="dateTo"
+                                  placeholder="YYYY-MM-DD">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-xs-12 end-md center-xs">
+                        <div class="clear-filter">
+                            <a id="clearFilter" href="javascript:void(0);">{{'Clear filters' |_}}</a>
+                        </div>
+                        <div class="apply-filter">
+                            <a id="applyFilter" class="btn btn-primary">{{'Apply filter' |_}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="recordsContainer">
+        {% partial 'library_records' records=records %}
+    </div>
+
+</div>

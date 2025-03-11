@@ -1,0 +1,24 @@
+url = "/multi-professional-teams"
+layout = "default"
+title = "Multi-professional teams"
+
+[siteSearchInclude]
+
+[jumbotron]
+jumbotron = "multi-professional-teams"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron jumbotron2]
+jumbotron = "multi-teams-bottom"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+==
+{% component 'siteSearchInclude' %}
+<div class="container800">
+{% component 'jumbotron' %}
+{% partial 'teams' %}
+{% component 'jumbotron2' %}
+</div>

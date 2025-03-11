@@ -1,0 +1,122 @@
+[menu]
+start = "id-1"
+activeNode = 0
+listItemClasses = "nav-item"
+primaryClasses = "navbar-nav"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+[jumbotron]
+jumbotron = "intro"
+background = "transperant"
+templates = "template1"
+description_limit = 0
+
+[jumbotron cs_best_practice]
+jumbotron = "coming-soon-best-practice"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron cs_training]
+jumbotron = "coming-soon-training"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+==
+<nav class="pr-1 pl-1 navbar fixed" id="headernavbar">
+    <div id="menuToggle">
+        <input type="checkbox" />
+        <span></span>
+        <span></span>
+        <span></span>
+        {% component 'menu' %}
+    </div>
+    <a href="{{'home'|page}}" class="navbar-brand" style="background: url('{{ this.theme.site_logo.getPath() }}') center no-repeat; background-size: contain;">
+
+    </a>
+
+    <div class="navbar-collapse collapse end-xs" id="headerNavbarNav" style="display: none;">
+        {% component 'menu' %}
+
+    </div>
+    <div class="search-and-social-media hidden-xs">
+        <ul class="navbar-nav">
+            <li class="nav-item social">
+                <a class="pr middle search-btn" onclick="showSearchForm();"></a>
+            </li>
+        </ul>
+    </div>
+    <div id="search" class="search" style="display: none;">
+        <div class="container">
+            <div class="close-search" onclick="hideSearchForm();">&#10006;</div>
+            <form class="input-group align-items-start" action="{{ url('search')}}" method="get">
+                <input class="form-control search_input" style="color: #000;" name="q" type="text" autocomplete="on" placeholder="Search">
+                <button class="btn btn-link pr p-search big text-grey-search-btn" type="submit"></button>
+            </form>
+        </div>
+    </div>
+
+</nav>
+
+
+<div class="header-image {{page_id}}">
+    <div class="header_image_overlay"></div>
+    {% if page_id == 'home' %}
+    <div class="video-carousel">
+        <div class="carousel-slide">
+            <video autoplay loop muted playsinline class="header-video-media">
+                <source src="{{ 'home_intro.mp4'|media }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+    <div class="video-arrows">
+        <div class="video-prev"></div>
+        <div class="video-next"></div>
+    </div>
+    <div class="jumbotron">
+        <div class="container">
+            <div class="intro">
+<!--                <h1 class="intro-text" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="500" data-aos-offset="-200">-->
+                <h1 class="intro-text">
+                    {{tag_line|raw}}
+                </h1>
+            </div>
+        </div>
+    </div>
+    {% elseif page_id == 'coming-soon' %}
+    <h1 class="underline white">Stay tuned for the first information<br> on the manual in June 2025.</h1>
+    <div class="coming_soon_intro">{% component 'cs_best_practice' %}</div>
+    <div class="video-carousel">
+        <div class="carousel-slide">
+
+            <video autoplay loop muted playsinline class="header-video-media">
+                <source src="{{ 'home_intro.mp4'|media }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+    {% elseif page_id == 'coming-soon-training' %}
+    <h1 class="underline white">Stay tuned for the first information<br> on the curriculum starting in 2026.</h1>
+    <div class="coming_soon_intro">{% component 'cs_training' %}</div>
+    <div class="video-carousel">
+        <div class="carousel-slide">
+
+            <video autoplay loop muted playsinline class="header-video-media">
+                <source src="{{ 'home_intro.mp4'|media }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="header-image-bar" {% if user and this.page.id != 'home' %} style="margin-top: 154px!important;" {% endif %}>
+        <h1 class="underline white">{% if page_title %} {{page_title}} {% else %} {{site_name}} {% endif %}</h1>
+        <video autoplay loop muted playsinline class="header-video">
+            <source src="{{ 'home_intro.mp4'|media }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    {% endif %}
+</div>

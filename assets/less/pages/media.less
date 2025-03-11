@@ -1,0 +1,63 @@
+.content_flyer,
+.content_press,
+.content_video,
+.content_newsletter,
+.content_logo{
+    display: flex;
+    .breakpoint-large-down({
+        justify-content: center;
+    });
+
+}
+
+.flyer-container,
+.logo-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: none;
+    outline: none;
+    background: none;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    border-radius: 10px;
+
+    img{
+        width: 609px;
+        height: 409px;
+        object-fit: cover;
+        max-width: 100%;
+        border-radius: 10px;
+        -webkit-transition: all 0.5s ease; /* Safari and Chrome */
+        -moz-transition: all 0.5s ease; /* Firefox */
+        -ms-transition: all 0.5s ease; /* IE 9 */
+        -o-transition: all 0.5s ease; /* Opera */
+        transition: all 0.5s ease;
+        &:hover{
+            -webkit-transform:scale(1.2); /* Safari and Chrome */
+            -moz-transform:scale(1.2); /* Firefox */
+            -ms-transform:scale(1.2); /* IE 9 */
+            -o-transform:scale(1.2); /* Opera */
+            transform:scale(1.2);
+        }
+    }
+    .name_label{
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        color: white;
+        font-size: 26px;
+        font-weight: 500;
+    }
+
+}
+
+.newsletters{
+    .btn-primary, button{
+        height: 47px;
+        display: flex;
+        align-items: center;
+    }
+}

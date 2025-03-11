@@ -1,0 +1,143 @@
+url = "/"
+layout = "default"
+title = "IP4OS"
+is_hidden = 0
+meta_description = "IP4OS"
+robot_index = "index"
+robot_follow = "follow"
+
+[jumbotron mission]
+jumbotron = "mission"
+title = 0
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron vision]
+jumbotron = "vision"
+title = 0
+background = "transperant"
+templates = "template3"
+description_limit = 0
+==
+<?php
+use Pensoft\Calendar\Models\Entry;
+use Pensoft\Articles\Models\Article;
+use Pensoft\Partners\Models\Partners as Partner;
+use Carbon\Carbon;
+
+function onStart(){
+    $this['consortium_partners'] = Partner::where('type', 1)->get();
+    $this['entries'] = Entry::where('end', '>', Carbon::now())->where('show_on_timeline', true)->where('is_internal', false)->orderBy('start', 'asc')->get();
+    $this['highlights'] = Article::news()->where('published', 'true')->descPublished()->take(6)->get()->map(function($item){
+        $item->content = str_limit(strip_tags($item->content), 90);
+        $item->href = $item->slug;
+        return $item;
+    });
+}
+?>
+==
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-xs-12">
+            <a class="mission" href="/about">
+                <h1 class="display-1">Mission</h1>
+                {% component 'mission' %}
+            </a>
+        </div>
+        <div class="col-md-6 col-xs-12">
+            <a class="mission" href="/about">
+                <h1 class="display-1">Vision</h1>
+                {% component 'vision' %}
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if highlights.count %}
+<!-- latest from news -->
+<div class="container-fluid highlights-news">
+    <div class="container">
+        <h1 class="display-1">Latest news from and<br> beyond the project</h1>
+    </div>
+
+    <div class="trigger_prev"></div>
+    <div class="trigger_next"></div>
+
+    <div class="news-carousel">
+        {% for highlight in highlights %}
+
+        <div class="home-news-highlights">
+            <div class="row news-item">
+                <div class="col-md-12 col-xs-12 home-news-cover">
+                    <a href="/news/{{highlight.slug}}">
+                        <img src="{{ highlight.cover.thumb(357, 221, {'mode': 'crop'})}}" alt="{{ highlight.title }}">
+                    </a>
+                    {% if highlight.external == 0 %}
+                    <div class="internal_label">IP4OS News</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-12 col-xs-12 news-content">
+                    <p class="news-date">{{ highlight.published_at|date('d M Y') }}</p>
+                    <a href="/news/{{highlight.slug}}">
+                        <div class="news-title">{{ highlight.title|length > 80 ? highlight.title|slice(0, 80)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : highlight.title|replace({"&nbsp;": " ", ".": ". "})  }}</div>
+                    </a>
+                    <div class="row read-more-row">
+                        <a href="/news/{{highlight.slug}}" class="read-more">{{'Read more' |_}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="center-xs">
+        <a class="btn btn-primary view_all" href="{{'news'|page}}">View all</a>
+    </div>
+</div>
+{% endif %}
+
+<p>&nbsp;</p>
+
+{% if entries.count %}
+    <div class="container">
+        <h1 class="display-1">Upcoming events on Open<br> Science and Intellectual Property</h1>
+        <div class="row event-items">
+        {% for event in entries %}
+                <div class="col-md-4 col-xs-12">
+                    <div class="event_item">
+                        <div>
+                            <p class="news-date">{{ event.start|date('d M Y') }}</p>
+                            <a href="{{event.url}}">
+                                <div class="news-title">{{ event.title|length > 70 ? event.title|slice(0, 70)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : event.title|replace({"&nbsp;": " ", ".": ". "})  }}</div>
+                            </a>
+                        </div>
+                        <a href="{{event.url}}" class="read-more">{{'Read more' |_}}</a>
+                    </div>
+                </div>
+        {% endfor %}
+        </div>
+    </div>
+
+    <div class="container center-xs">
+        <a class="btn btn-primary view_all" href="{{'events'|page}}">View all</a>
+    </div>
+
+{% endif %}
+
+
+<div class="container">
+    <div class="row middle-xs between-xs consortium_partners">
+        <div class="col-xs-12 center-xs mb-1 mt-2"><h1 class="display-1">Meet the partners behind<br> the project</h1></div>
+        <div class="col-xs-12 center-xs">
+            <div class="row">
+                {% for c in consortium_partners %}
+                <div class="col-md-3 col-xs-6">
+                    <div class="partner_logo"><a href="{{c.instituion_url}}" target="_blank">
+                        <img alt="{{ c.instituion }}" src="{{c.cover.thumb(auto,86,{'mode':'crop'})}}"></a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
