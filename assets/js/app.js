@@ -199,7 +199,10 @@ $(document).ready(function() {
         }
 
         if($(this).parent().parent().hasClass('resources')){
-            $active.addClass('active');
+            $('.resources_tabs li').each(function(){
+                $(this).removeClass('active');
+            });
+            $active.parent().addClass('active');
         }
 
         if($(this).parent().parent().hasClass('events')){
