@@ -16,8 +16,20 @@ default_view = "dayGridMonth"
 <?php
 use Pensoft\Calendar\Models\Entry;
 use Carbon\Carbon;
+use Pensoft\Calendar\Models\Category;
 
 function onStart(){
+
+$this['categories'] = Category::orderBy('created_at', 'desc')->get();
+
+$categoryId = input('categoryId', 'all');
+
+if ($categoryId !== 'all' && !is_numeric($categoryId)) {
+return redirect('events');
+}
+
+$this['categoryId'] = $categoryId;
+
 
     if($this->param('slug')){
 $this['entry'] =  Entry::select(
@@ -58,7 +70,20 @@ if($this['entry']['cover_image']){
 
 }
 $this['page_url'] = $this->pageUrl('');
-$this['entries'] = Entry::where('end', '>=', Carbon::now())->orderBy('start', 'asc')->paginate(20);
+
+if ($categoryId === 'all') {
+$records = Entry::where('end', '>=', Carbon::now())->orderBy('start', 'asc')->paginate(20);
+} else {
+$records = Entry::latest()->whereHas('categories', function ($query) use ($categoryId) {
+$query->where('id', $categoryId);
+})->where('end', '>=', Carbon::now())->orderBy('start', 'asc')->paginate(20);
+}
+
+if ($categoryId !== 'all') {
+$records->appends(['categoryId' => $categoryId]);
+}
+
+$this['records'] = $records;
 $this['past_entries'] = Entry::where('end', '<', Carbon::now())->orderBy('start', 'desc')->get();
 
 $this['slug'] = $this->param('slug');
@@ -77,39 +102,158 @@ $this['slug'] = $this->param('slug');
     <div class="container">
 
         <div class="row" id="listView">
-            <div class="events_list_container">
-                {% for entry in entries %}
-                {% set url = entry.url ?  entry.url : '/events/' ~ entry.slug %}
-                <div class="row entry_item middle-xs">
-                    <div class="col-md-1 col-xs-12 date_container">
-                        <span class="date_day">{{entry.start|date("j")}}</span>
-                        <span class="date_month">{{entry.start|date("M")}}</span>
-                        <span class="date_year">{{entry.start|date("Y")}}</span>
-                    </div>
-                    <div class="col-md-9 col-xs-12 body_container">
-                        {% if entry.cover_image %}
-                        <a href="{{url}}" target="_blank">
-                            <img src="{{entry.cover_image.getThumb(auto, auto, {'mode': 'crop'})}}">
-                        </a>
-                        {% endif %}
-                        <a href="{{url}}" target="_blank" class="date_week">
-                            {{entry.title|raw}}
-                        </a>
+            <div class="category-tabs-container mb-2">
+                {% if categories.count > 0 %}
+                <!-- Custom Dropdown Structure -->
+
+                <div class="col-xs-12 filter-fields-container">
+                    <div class="row">
+
+                        <div class="col-md-2 col-xs-12 start-md center-xs">
+                            <div class="sort-field sort-dropdown">
+                                <select id="sortType" name="sortType">
+                                    <option value="0">{{'All' |_}}</option>
+                                    <option value="1">{{'IP4OS organized' |_}}</option>
+                                    <option value="2">{{'IP4OS involved' |_}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-xs-12 start-md center-xs">
+                            <div class="sort-field sort-dropdown">
+                                <select id="sortTarget" name="sortTarget">
+                                    <option value="0">{{'All target groups' |_}}</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
 
                     </div>
-                    <div class="col-md-2 col-xs-12 read-more-events center-md center-xs">
-                        <a href="{{url}}" target="_blank" class="read-more">Read more</a>
-                    </div>
                 </div>
-                {% endfor %}
+
+                {% endif %}
             </div>
-            {% if entries.count > 20 %}
+
+
+            <div class="events_list_container" id="recordsContainer">
+                {% partial 'eventslist' records=records %}
+            </div>
+
+
+            {% if records.count > 20 %}
             <div class="row container">
-                {{ entries.fragment('listView').render|raw }}
+                {{ records.fragment('listView').render|raw }}
             </div>
             {% endif %}
 
-            {% if past_entries.count %}
+
+            <script>
+                $(document).ready(function() {
+                    var search_i = $('#searchInput').selectize({
+                        plugins: ["clear_button", "remove_button", "restore_on_backspace"],
+                        create: true,
+                        valueField: 'value',
+                        labelField: 'text',
+                        searchField: 'text',
+                        load: function (query, callback) {
+                            if (query.length < 1) {
+                                callback([]);
+                                return;
+                            }
+                            $.request('onSearchRecords', {
+                                data: {query: query},
+                                success: function (response) {
+                                    callback(response);
+                                }
+                            });
+                        },
+                        render: {
+                            option_create: function (data, escape) {
+                                return '<div class="create">Search for: <strong>' + escape(data.input) + '</strong>&hellip;</div>';
+                            }
+                        },
+                        highlight: true,
+                        sortField: 'text',
+                        loadThrottle: 300,
+                        noResultsText: 'No results found',
+                        onChange: function (value) {
+                            updateEventsList();
+                        }
+                    });
+
+
+                    var select = $('#sortTarget, #sortType').selectize({
+                        onChange: function(value) {
+                            updateEventsList();
+                        }
+                    });
+
+                    $('#applyFilter').on('click', updateEventsList());
+
+                    $('#clearFilter').on('click',function() {
+                        var selectize = select[0].selectize;
+                        selectize.setValue(0);
+                        updateEventsList();
+                    });
+
+                    var urlParams = window.location.search.substring(1).split('&');
+                    if(urlParams.length){
+                        for(i = 0; i < urlParams.length; i++){
+                            var paramArr = urlParams[i].split('=');
+                            var paramKey = paramArr[0];
+                            var paramVal = paramArr[1];
+                            if(typeof paramVal !== 'undefined'){
+                                var selectize = select[i].selectize;
+                                selectize.setValue(paramVal);
+                                updateEventsList();
+                            }
+                        }
+                    }
+                });
+
+
+                function updateEventsList() {
+                    var sortType = $('#sortType').val();
+
+                    if($('#sortType').length == 0){
+                        sortType = 0;
+                    }
+
+                    var sortTarget = $('#sortTarget').val();
+
+                    $.request('onSearchRecords', {
+                        data: {
+                            sortTarget: sortTarget,
+                            sortType: sortType,
+                        },
+                        update: { 'articlelist': '#recordsContainer' }
+                    });
+                }
+
+
+                function getUrlParams(){
+                    var params = window.location.search.substring(1).split('&');
+                    var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                }
+
+
+                $(document).keydown(function(e) {
+
+                    // 191 = /
+                    if (e.keyCode === 191) {
+                        e.preventDefault();
+                    }
+
+                    // 27 = esc
+                    if (e.keyCode === 27) {
+                        e.preventDefault();
+                    }
+                });
+            </script>
+
+            {% if past_entries.count  %}
                 <h2 style="margin-top: 50px;">Past events</h2>
                 <div class="events_list_container">
                 {% for entry in past_entries %}

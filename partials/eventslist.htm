@@ -1,0 +1,27 @@
+
+<!--<div class="events_list_container">-->
+    {% for entry in records %}
+    {% set url = entry.url ?  entry.url : '/events/' ~ entry.slug %}
+    <div class="row entry_item middle-xs">
+        <div class="col-md-1 col-xs-12 date_container">
+            <span class="date_day">{{entry.start|date("j")}}</span>
+            <span class="date_month">{{entry.start|date("M")}}</span>
+            <span class="date_year">{{entry.start|date("Y")}}</span>
+        </div>
+        <div class="col-md-10 col-xs-12 body_container">
+            {% if entry.cover_image %}
+            <a href="{{url}}" target="_blank">
+                <img src="{{entry.cover_image.getThumb(auto, auto, {'mode': 'crop'})}}">
+            </a>
+            {% endif %}
+            <a href="{{url}}" target="_blank" class="date_week">
+                {{entry.title|raw}}
+            </a>
+
+        </div>
+        <div class="col-md-1 col-xs-12 read-more-events end-md center-xs">
+            <a href="{{url}}" target="_blank" class="read-more">Read more</a>
+        </div>
+    </div>
+    {% endfor %}
+<!--</div>-->
