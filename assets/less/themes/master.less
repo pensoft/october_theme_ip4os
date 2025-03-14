@@ -355,7 +355,6 @@ ul.pagination{
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 100px;
     }
 
     .container-fluid {
@@ -510,7 +509,6 @@ ul.pagination{
     .social-networks{
         display: inline-flex;
         flex-direction: row;
-        justify-content: end;
         flex-wrap: wrap;
         .breakpoint-large-down({
             display: flex;
@@ -536,7 +534,7 @@ ul.pagination{
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-left: 10px;
+                margin-right: 10px;
                 &:hover{
                     border: 1px solid @button-background-color;
                     background: @button-background-color;
@@ -554,14 +552,17 @@ ul.pagination{
 
         .subscribe_newsletter_btn_footer{
             display: block;
-            margin-top: 20px;
             a{
                 letter-spacing: 0;
                 font-size: 0.8em !important;
                 white-space: nowrap;
                 margin-left: 0;
+                margin-right: 0;
                 width: fit-content;
                 padding-left: 50px;
+                height: 34px;
+                display: flex;
+                align-items: center;
                 transition: all 0.3s ease-in-out;
                 border-radius: 6px;
                 border: 1px solid rgba(250, 250, 250, 0.12);
