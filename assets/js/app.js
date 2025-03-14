@@ -160,7 +160,7 @@ $(document).ready(function() {
         // autoplaySpeed: 2000,
         draggable: true,
         // pauseOnHover: true,
-        centerMode: false,
+        centerMode: true,
         variableWidth: true,
         infinite: true,
         slidesToShow: 3,
