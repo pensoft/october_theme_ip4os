@@ -107,11 +107,11 @@ function onStart(){
                     <div class="event_item">
                         <div>
                             <p class="news-date">{{ event.start|date('d M Y') }}</p>
-                            <a href="{{event.url}}">
+                            <a href="{{'events'|page}}/{{event.slug}}">
                                 <div class="news-title">{{ event.title|length > 70 ? event.title|slice(0, 70)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : event.title|replace({"&nbsp;": " ", ".": ". "})  }}</div>
                             </a>
                         </div>
-                        <a href="{{event.url}}" class="read-more">{{'Read more' |_}}</a>
+                        <a href="{{'events'|page}}/{{event.slug}}" class="read-more">{{'Read more' |_}}</a>
                     </div>
                 </div>
         {% endfor %}
