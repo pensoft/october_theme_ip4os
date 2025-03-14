@@ -72,6 +72,25 @@ button:not(:disabled) {
         }
     }
 
+    &.subscribe{
+        padding-left: 20px;
+        transition: all 0.5s ease-in-out;
+
+        &:before{
+            background: url("../../assets/images/email-subscribe-icon.svg") left center no-repeat;
+            background-size: 14px;
+            transition: all 0.5s ease-in-out;
+            width: 20px;
+            height: 20px;
+            left: 26px;
+            top: 7px;
+            position: absolute;
+            content: ' ';
+        }
+        &:hover{
+        }
+    }
+
     &.download{
         &:before{
                 background: url("../../assets/images/download.svg") left center no-repeat;
