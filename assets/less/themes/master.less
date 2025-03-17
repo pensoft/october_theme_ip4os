@@ -296,9 +296,12 @@ ul.pagination{
 .coming_soon_intro{
     position: absolute;
     text-align: center;
-    top: 45%;
+    top: 36%;
     width: 800px;
     max-width: 100%;
+    .breakpoint-laptop-down({
+        top: 45%;
+    });
     .breakpoint-large-down({
         top: 35%;
     });
