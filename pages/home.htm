@@ -29,7 +29,7 @@ use Carbon\Carbon;
 function onStart(){
     $this['consortium_partners'] = Partner::where('type', 1)->get();
     $this['entries'] = Entry::where('end', '>', Carbon::now())->where('show_on_timeline', true)->where('is_internal', false)->orderBy('start', 'asc')->get();
-    $this['highlights'] = Article::news()->where('published', 'true')->descPublished()->take(6)->get()->map(function($item){
+    $this['highlights'] = Article::news()->where('published', 'true')->descPublished()->take(3)->get()->map(function($item){
         $item->content = str_limit(strip_tags($item->content), 90);
         $item->href = $item->slug;
         return $item;
