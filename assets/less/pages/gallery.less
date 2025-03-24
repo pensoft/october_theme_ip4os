@@ -80,9 +80,9 @@
 .next {
     cursor: pointer;
     position: absolute;
-    top: 180px;
-    width: 69px;
-    height: 69px;
+    width: 100px;
+    height: 100%;
+    top: 0;
     background-color: transparent;
     border-radius: 50%;
     user-select: none;
@@ -92,15 +92,15 @@
     z-index: 5;
 
     .breakpoint-small-down({
-        top: 42%;
         width: 48px;
         height: 48px;
     });
 }
 
 .next {
-    right: 10px;
+    right: 0px;
     background-image: url('../../assets/images/gallery_arrow_right.svg');
+    background-size: 24px;
 
     //.breakpoint-small-down({
     //    right: -15px;
@@ -108,8 +108,9 @@
 }
 
 .prev {
-    left: 10px;
+    left: 0px;
     background-image: url('../../assets/images/gallery_arrow_left.svg');
+    background-size: 24px;
     //.breakpoint-small-down({
     //    left: -15px;
     //});
