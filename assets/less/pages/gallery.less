@@ -1,37 +1,74 @@
 .gallery-title{
+    display: none;
     color: @dark-color;
     font-size: 36px;
 }
 
 .gallery-item {
     img{
-        max-width: 80% !important;
+        width: 743px;
+        height: 436px;
+        max-width: 100%;
         border-radius: 10px;
-        object-fit: contain;
-        width: auto;
+        object-fit: cover;
+    }
+
+    .col-md-10 {
+        flex-basis: 100%;
+        max-width: 100%;
+        padding: 0;
     }
 }
 
 /* Position the image container (needed to position the left and right arrows) */
 .gallery_container {
     position: relative;
+    .row:has(.column){
+        display: none;
+    }
+    &:before{
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+        width: 100px;
+        max-width: 20%;
+        height: 436px;
+        content: ' ';
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-bottom-left-radius: 10px;
+        border-top-left-radius: 10px;
+        z-index: 2;
+    }
+    &:after{
+        background: linear-gradient(270deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+        width: 100px;
+        max-width: 20%;
+        height: 436px;
+        content: ' ';
+        position: absolute;
+        right: 0;
+        top: 0;
+        border-bottom-right-radius: 10px;
+        border-top-right-radius: 10px;
+        z-index: 2;
+    }
+
+
+
 }
 
 /* Hide the images by default */
 .mySlides {
     display: none;
     text-align: center;
-    img{
-        border-radius: 0!important;
-    }
 }
-
-.img-fluid {
-    height: 400px !important;
-    .breakpoint-small-down({
-        height: 280px !important;
-    });
-}
+//
+//.img-fluid {
+//    height: 400px !important;
+//    .breakpoint-small-down({
+//        height: 280px !important;
+//    });
+//}
 
 /* Add a pointer when hovering over the thumbnail images */
 .cursor {
@@ -52,28 +89,30 @@
     -webkit-user-select: none;
     background-repeat: no-repeat;
     background-position: center;
+    z-index: 5;
 
     .breakpoint-small-down({
-        top: 120px;
+        top: 42%;
         width: 48px;
         height: 48px;
-     });
+    });
 }
 
 .next {
     right: 10px;
-    background-image: url('../../assets/images/next-gallery.svg');
-    .breakpoint-small-down({
-        right: -15px;
-     });
+    background-image: url('../../assets/images/gallery_arrow_right.svg');
+
+    //.breakpoint-small-down({
+    //    right: -15px;
+    //});
 }
 
 .prev {
     left: 10px;
-    background-image: url('../../assets/images/back-gallery.svg');
-    .breakpoint-small-down({
-        left: -15px;
-     });
+    background-image: url('../../assets/images/gallery_arrow_left.svg');
+    //.breakpoint-small-down({
+    //    left: -15px;
+    //});
 }
 
 /* On hover, add a black background color with a little bit see-through */
@@ -136,5 +175,6 @@
 }
 
 .download-gallery{
+    display: none;
     padding-bottom: 24px;
 }

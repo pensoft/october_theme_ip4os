@@ -5,6 +5,10 @@ is_hidden = 0
 robot_index = "index"
 robot_follow = "follow"
 
+
+[article_galleries]
+
+
 [list]
 maxItems = 10
 templates = "template1"
@@ -153,6 +157,11 @@ $this['related'] = $related;
             <div class="content">
                 {{article.content|raw}}
             </div>
+
+            <div class="image-gallery">
+                {% component 'article_galleries' %}
+            </div>
+
             <div class="row middle-xs">
                 <div class="col-xs col-md start-md center-xs share_container">
                     <span class="share_label">Share</span>
