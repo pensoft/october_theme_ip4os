@@ -262,6 +262,83 @@ ul.pagination{
             p{
                 color: @white-color;
             }
+
+            .home_video{
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 19.2px;
+                vertical-align: middle;
+                display: flex;
+                align-items: center;
+                a{
+                    color: white;
+                }
+
+                @buttonbg: rgba(255, 255, 255, 0.19);
+                @buttonshadow: rgba(255, 255, 255, 0.19);
+
+                .pulse {
+                    position: relative;
+                    margin-right: 20px;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    font-size: 12px;
+                    color: white;
+                    background: @buttonbg;
+                    animation: 1.6s playShadow ease-out infinite;
+                    display: flex;
+                    cursor: pointer;
+                    text-decoration: none;
+
+                    span {
+                        margin:auto;
+                        padding-left:3px;
+                    }
+
+                    &:after {
+                        content:'';
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        border-radius:50%;
+                        z-index:-1;
+                        pointer-events:none;
+                        transition:.35s;
+                    }
+
+                    &:hover {
+
+                        &:after {
+                            box-shadow: 0 0 0 2px fade(@buttonshadow, 30%), 0 0 0 4px fade(@buttonshadow, 20%);
+                        }
+                    }
+                }
+
+                @keyframes playShadow {
+                    0% {
+                        box-shadow: 0 0 0 0px fade(@buttonshadow, 30%), 0 0 0 0px fade(@buttonshadow, 20%);
+                        transform: scale(1);
+                    }
+                    18% {
+                        box-shadow: 0 0 0 0px fade(@buttonshadow, 30%), 0 0 0 0px fade(@buttonshadow, 20%);
+                    }
+                    35% {
+                        transform: scale(1.08);
+                    }
+                    76% {
+                        transform: scale(0.96);
+                    }
+                    100% {
+                        box-shadow: 0 0 0 8px fade(@buttonshadow, 0), 0 0 0 13px fade(@buttonshadow, 0);
+                        transform: scale(1);
+                    }
+                }
+            }
+
+
         }
     }
 }
@@ -399,6 +476,12 @@ ul.pagination{
             justify-content: end;
             .container{
                 padding: 15px 0;
+                width: 100%;
+            }
+
+            a{
+                color: white;
+                text-transform: unset;
             }
         }
     }

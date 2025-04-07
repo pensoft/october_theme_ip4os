@@ -61,3 +61,92 @@
         align-items: center;
     }
 }
+
+.press-releases{
+    .category-tabs-container{
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        width: 100%;
+
+
+        a{
+            padding-bottom: 10px;
+            width: fit-content;
+            cursor: pointer;
+            font-size: 20px;
+            font-style: normal;
+            color: @heading-text-color;
+            text-transform: capitalize;
+            margin-right: 30px;
+            opacity: 0.65;
+            .breakpoint-small-down({
+                display: block;
+                margin-left: 0px;
+                margin-right: 0px;
+                width: 100%;
+                padding: 5px 0;
+            });
+
+            &:hover, &.active{
+                opacity: 1;
+                font-weight: 600;
+            }
+
+        }
+        .category-tabs{
+            .breakpoint-large-down({
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            });
+        }
+        .breakpoint-large-down({
+            margin-left: unset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-align: center;
+        });
+    }
+
+
+    .press-relies-item{
+        max-width: 100%;
+        margin: 0 auto 30px auto;
+        padding: 30px!important;
+        position: relative;
+        background: @secondary-color;
+        border-radius: 8px;
+
+        .breakpoint-large-down({
+            width: auto;
+        });
+
+        .card-title{
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 120%;
+            letter-spacing: -0.02em;
+        }
+
+        .date{
+            color: #8C99A0;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 120%;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+
+        .btn.btn-primary{
+            margin-right: 10px;
+            .breakpoint-large-down({
+                margin-right: 0;
+                margin-bottom: 20px;
+            });
+        }
+    }
+}
