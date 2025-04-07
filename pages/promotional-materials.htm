@@ -1,7 +1,6 @@
-title = "Promotional materials"
-layout = "default"
 url = "/promotional-materials"
-
+layout = "default"
+title = "Promotional materials"
 
 [builderList mediaFlyersList]
 modelClass = "pensoft\Media\Models\Flyers"
@@ -84,7 +83,7 @@ return Response::download($pathToFile, $fileName, $headers);
         {% endfor %}
         <div class="col-md-6 col-xs-12 mb-1">
             <a class="flyer-container" href="{{'press-releases'|page}}">
-                <img src="{{'Press-releases.jpg'|media}}" title="Press releases">
+                <img src="{{'Press-releases-image.png'|media}}" title="Press releases">
                 <div class="name_label">Press releases</div>
             </a>
         </div>
