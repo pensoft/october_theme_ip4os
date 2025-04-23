@@ -1,9 +1,9 @@
-url = "/promotional-materials"
+url = "/posters"
 layout = "default"
-title = "Promotional materials"
+title = "Posters"
 
-[builderList mediaFlyersList]
-modelClass = "pensoft\Media\Models\Flyers"
+[builderList mediaDocumentsList]
+modelClass = "pensoft\Media\Models\Documents"
 scope = "-"
 scopeValue = "{{ :scope }}"
 displayColumn = "name"
@@ -13,15 +13,15 @@ detailsUrlParameter = "id"
 pageNumber = "{{ :page }}"
 ==
 <?php
-use Pensoft\Media\Models\Flyers;
+use Pensoft\Media\Models\Documents;
 use System\Models\File;
 
 function onStart(){
-	$this['mediaFlyersList'] =  Flyers::get();
+	$this['mediaDocumentsList'] =  Documents::get();
 	if(get('download')){
 		$file = File::find((int)get('download'));
 		$file_name = $file->getLocalPath();
-$recordName = get('file_name') ? get('file_name') : 'IP4OS_materials';
+$recordName = get('file_name') ? get('file_name') : 'IP4OS_documents';
 $ext= $file->getExtension();
 
 if (file_exists($file_name)) {
@@ -39,7 +39,7 @@ flush();
 readfile($file_name);
 exit();
 }
-return Redirect::to('/promotional-materials');
+return Redirect::to('/posters');
 }
 
 }
@@ -61,13 +61,21 @@ return Response::download($pathToFile, $fileName, $headers);
 ?>
 ==
 <div class="container">
-    {% set records = mediaFlyersList %}
-    {% set displayColumn = mediaFlyersList.displayColumn %}
-    {% set noRecordsMessage = mediaFlyersList.noRecordsMessage %}
-    {% set detailsPage = mediaFlyersList.detailsPage %}
-    {% set detailsKeyColumn = mediaFlyersList.detailsKeyColumn %}
-    {% set detailsUrlParameter = mediaFlyersList.detailsUrlParameter %}
+    {% set records = mediaDocumentsList %}
+    {% set displayColumn = mediaDocumentsList.displayColumn %}
+    {% set noRecordsMessage = mediaDocumentsList.noRecordsMessage %}
+    {% set detailsPage = mediaDocumentsList.detailsPage %}
+    {% set detailsKeyColumn = mediaDocumentsList.detailsKeyColumn %}
+    {% set detailsUrlParameter = mediaDocumentsList.detailsUrlParameter %}
 
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="go_back mt-2 mb-2">
+                <a href="/promotional-materials">Back</a>
+            </div>
+
+        </div>
+    </div>
     {% if records.count() %}
     <div class="row">
         {% for record in records %}
@@ -75,24 +83,12 @@ return Response::download($pathToFile, $fileName, $headers);
             {{form_open({ request: 'onDownloadFile' }) }}
             <input type="hidden" value="{{record.file.id}}" name="id">
             <button class="flyer-container {{record.name}}" type="submit" data-attach-loading>
-                <img src="{{record.flyer_image.path}}" title="{{record.name}}">
-                <div class="name_label">{{record.name}}</div>
+                <img src="{{record.image.path}}" title="{{record.title}}">
+                <div class="name_label">{{record.title}}</div>
             </button>
             {{ form_close() }}
         </div>
         {% endfor %}
-        <div class="col-md-6 col-xs-12 mb-1">
-            <a class="flyer-container" href="{{'posters'|page}}">
-                <img src="{{'posters.png'|media}}" title="Posters">
-                <div class="name_label">Posters</div>
-            </a>
-        </div>
-        <div class="col-md-6 col-xs-12 mb-1">
-            <a class="flyer-container" href="{{'press-releases'|page}}">
-                <img src="{{'Press-releases-image.png'|media}}" title="Press releases">
-                <div class="name_label">Press releases</div>
-            </a>
-        </div>
     </div>
     {% endif %}
 </div>
