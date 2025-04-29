@@ -9,18 +9,6 @@ jumbotron = "resources"
 background = "transperant"
 templates = "template3"
 description_limit = 0
-
-[jumbotron testimonials]
-jumbotron = "testimonials"
-background = "transperant"
-templates = "template3"
-description_limit = 0
-
-[jumbotron webinars]
-jumbotron = "webinars"
-background = "transperant"
-templates = "template3"
-description_limit = 0
 ==
 <?php
 use Pensoft\Media\Models\Webinars;
@@ -86,10 +74,10 @@ return Response::download($pathToFile, $fileName, $headers);
     </div>
 
     <div class="row" id="testimonials">
-        {% component 'testimonials' %}
+        
     </div>
     <div class="row" id="webinars">
-        {% component 'webinars' %}
+        
         {% set records = mediaVideosList %}
         {% if records.count() %}
             {% for record in records %}
@@ -117,8 +105,6 @@ return Response::download($pathToFile, $fileName, $headers);
                 {% endif %}
             </div>
 
-            {% else %}
-            {{ noRecordsMessage }}
             {% endfor %}
         </div>
         {% endif %}
