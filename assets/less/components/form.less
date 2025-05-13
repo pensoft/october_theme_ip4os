@@ -38,6 +38,9 @@
         & > label {
             display: block;
             margin: 0 0 .3rem 0;
+            &:has(input[name="external_events"]){
+                display: none;
+            }
         }
         & > input, textarea, select {
             display: block;

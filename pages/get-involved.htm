@@ -1,0 +1,22 @@
+url = "/get-involved"
+layout = "default"
+title = "Get involved"
+
+[siteSearchInclude]
+
+[jumbotron]
+jumbotron = "get-involved-intro"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[get_involved_form]
+recaptcha_key = "6LdG4jcrAAAAAMrUSHkHYViuja4PPb7-X87oq6fD"
+message_label = "Thank you for contacting us!"
+==
+{% component 'siteSearchInclude' %}
+
+<div class="container" data-aos="fade-up">
+{% component 'jumbotron' %}
+{% component 'get_involved_form' %}
+</div>
