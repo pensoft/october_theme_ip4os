@@ -47,7 +47,7 @@ function onStart()
 			}
 			$zip->close();
 			header("Content-type: application/zip");
-			header("Content-Disposition: attachment; filename=PollinERA-documents.zip");
+			header("Content-Disposition: attachment; filename=IP4OS-documents.zip");
 			header("Pragma: no-cache");
 			header("Expires: 0");
 			readfile($zip_file);

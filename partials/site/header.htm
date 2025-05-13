@@ -114,6 +114,9 @@ description_limit = 0
         </div>
     </div>
 
+    {% elseif page_id == 'get-involved' %}
+    <div class="mt-4"></div>
+
     {% else %}
     <div class="header-image-bar" {% if user and this.page.id != 'home' %} style="margin-top: 154px!important;" {% endif %}>
         <h1 class="underline white">{% if page_title %} {{page_title}} {% else %} {{site_name}} {% endif %}</h1>
