@@ -9,6 +9,12 @@ jumbotron = "resources"
 background = "transperant"
 templates = "template3"
 description_limit = 0
+
+[jumbotron papers]
+jumbotron = "papers-tab"
+background = "transperant"
+templates = "template3"
+description_limit = 0
 ==
 <?php
 use Pensoft\Media\Models\Webinars;
@@ -69,6 +75,7 @@ return Response::download($pathToFile, $fileName, $headers);
                 <ul>
                     <li class="active"><a href="#testimonials">Testimonials</a></li>
                     <li><a href="#webinars">Webinars</a></li>
+                    <li><a href="#papers">Papers</a></li>
                 </ul>
             </div>
         </div>
@@ -141,6 +148,10 @@ return Response::download($pathToFile, $fileName, $headers);
             {% endfor %}
             {% endif %}
         </div>
+    </div>
+
+    <div id="papers">
+        {% component 'papers' %}
     </div>
 
 
