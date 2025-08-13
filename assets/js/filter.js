@@ -31,46 +31,7 @@ $(document).ready(function() {
         }
     });
 
-// $('#dateFrom').on('change', updateLibraryList());
-// $('#dateTo').on('change', updateLibraryList());
-
-    var dateFormat = 'yy-mm-dd';
-    $('#dateFrom').datepicker({
-        dateFormat: dateFormat,
-        onSelect: function (value) {
-            updateLibraryList();
-        }
-    }).keyup(function(e) {
-        if(e.keyCode == 8 || e.keyCode == 46) {
-            $.datepicker._clearDate(this);
-        }
-    });
-    $('#dateTo').datepicker({
-        dateFormat: dateFormat,
-        onSelect: function (value) {
-            updateLibraryList();
-        }
-    }).keyup(function(e) {
-        if(e.keyCode == 8 || e.keyCode == 46) {
-            $.datepicker._clearDate(this);
-        }
-    });
-
-    var from = $("#dateFrom")
-            .datepicker({
-                changeMonth: true,
-            })
-            .on("change", function () {
-                to.datepicker("option", "minDate", getDate(this));
-            }),
-        to = $("#dateTo").datepicker({
-            changeMonth: true,
-        })
-            .on("change", function () {
-                from.datepicker("option", "maxDate", getDate(this));
-            });
-
-    var select = $('#sortFormat, #sortProject').selectize({
+    var select = $('#sortOrder, #sortType').selectize({
         onChange: function(value) {
             updateLibraryList();
         }
@@ -79,18 +40,10 @@ $(document).ready(function() {
     $('#applyFilter').on('click', updateLibraryList());
 
     $('#clearFilter').on('click',function() {
-        $('#dateFrom').val('');
-        $('#dateTo').val('');
-        // $('#searchInput').val('');
-        // $('#sortFormat').val(0);
-        // $('#sortProject').val(0);
         var selectize = select[0].selectize;
         var selectize1 = select[1].selectize;
-
-        var searchinput = search_i[0].selectize;
-        searchinput.clear();
         selectize.setValue(0);
-        selectize1.setValue(0);
+        selectize1.setValue('title asc');
         updateLibraryList();
     });
 
@@ -113,40 +66,21 @@ $(document).ready(function() {
 
 });
 
-function getDate( element ) {
-    var date;
-    try {
-        date = $.datepicker.parseDate( dateFormat, element.value );
-    } catch( error ) {
-        date = null;
-    }
-
-    return date;
-}
-
-
 
 
 function updateLibraryList() {
-    var sortProject = $('#sortProject').val();
+    var sortType = $('#sortType').val();
 
-    if($('#sortProject').length == 0){
-        sortProject = 2;
+    if($('#sortType').length == 0){
+        sortType = 0;
     }
+    var sortOrder = $('#sortOrder').val();
 
-    var sortFormat = $('#sortFormat').val();
-
-    var dateFrom = $('#dateFrom').val();
-    var dateTo = $('#dateTo').val();
-    var searchTerm = $('#searchInput').val();
 
     $.request('onSearchRecords', {
         data: {
-            searchTerms: searchTerm,
-            sortFormat: sortFormat,
-            sortProject: sortProject,
-            dateFrom: dateFrom,
-            dateTo: dateTo,
+            sortOrder: sortOrder,
+            sortType: sortType,
         },
         update: { 'library_records': '#recordsContainer' }
     });

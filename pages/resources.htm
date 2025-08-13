@@ -15,59 +15,74 @@ jumbotron = "papers-tab"
 background = "transperant"
 templates = "template3"
 description_limit = 0
+
+
+[LibraryPage]
+templates = "template7"
+has_search = 1
+add_file_name = 1
+no_records_message = ""
+redirect_to_download_page = 1
+milestones_filter = 1
+
 ==
 <?php
 use Pensoft\Media\Models\Webinars;
+use Pensoft\Library\Models\Library;
 use System\Models\File;
 
 function onStart(){
 	$this['testimonials'] =  Webinars::where('category_id', 1)->get();
 	$this['webinars'] =  Webinars::where('category_id', 2)->get();
-if(get('download')){
-$file = File::find((int)get('download'));
-$file_name = $file->getLocalPath();
-$recordName = get('file_name') ? get('file_name') : 'IP4OS_video';
-$ext= $file->getExtension();
+    $this['library'] = Library::orderBy('title', 'asc')->get();
 
-if (file_exists($file_name)) {
-header('Content-Description: File Transfer');
-header('Content-Type: application/octet-stream');
-header("Content-Type: application/force-download");
-header('Content-Disposition: attachment; filename='.$recordName .'.'. $ext);
-header('Content-Transfer-Encoding: binary');
-header('Expires: 0');
-header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-header('Pragma: public');
-header('Content-Length: ' . filesize($file_name));
-ob_clean();
-flush();
-readfile($file_name);
-exit();
-}
-return Redirect::to('/videos');
-}
+    if(get('download')){
+        $file = File::find((int)get('download'));
+        $file_name = $file->getLocalPath();
+        $recordName = get('file_name') ? get('file_name') : 'IP4OS_video';
+        $ext= $file->getExtension();
+
+            if (file_exists($file_name)) {
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header("Content-Type: application/force-download");
+                header('Content-Disposition: attachment; filename='.$recordName .'.'. $ext);
+                header('Content-Transfer-Encoding: binary');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($file_name));
+                ob_clean();
+                flush();
+                readfile($file_name);
+                exit();
+            }
+        return Redirect::to('/videos');
+    }
 }
 
 
 function onDownloadFile(){
-$file = File::find(post('id'));
-$pathToFile = $file->getLocalPath();
-$fileName = $file->file_name;
-$fileType = $file->content_type;
-$headers = [
-'HTTP/1.1 200 OK',
-'Pragma: public',
-'Content-Type: '.$fileType,
-'Content-Type: application/force-download'
-];
+    $file = File::find(post('id'));
+    $pathToFile = $file->getLocalPath();
+    $fileName = $file->file_name;
+    $fileType = $file->content_type;
+    $headers = [
+        'HTTP/1.1 200 OK',
+        'Pragma: public',
+        'Content-Type: '.$fileType,
+        'Content-Type: application/force-download'
+    ];
 
-return Response::download($pathToFile, $fileName, $headers);
+    return Response::download($pathToFile, $fileName, $headers);
 }
 ?>
 ==
 {% component 'siteSearchInclude' %}
-<div class="container800">
+
 {% component 'resources' %}
+
+<div class="container800">
     <div class="resources_tabs mb-4">
         <div class="tab-container">
             <div class="tab-wrap">
@@ -80,7 +95,9 @@ return Response::download($pathToFile, $fileName, $headers);
             </div>
         </div>
     </div>
+</div>
 
+<div class="container800">
     <div id="testimonials">
         <div class="row mt-4">
             {% set records = testimonials %}
@@ -118,6 +135,8 @@ return Response::download($pathToFile, $fileName, $headers);
             {% endif %}
         </div>
     </div>
+</div>
+<div class="container800">
     <div id="webinars">
         <div class="row mt-4" >
 
@@ -156,11 +175,59 @@ return Response::download($pathToFile, $fileName, $headers);
             {% endif %}
         </div>
     </div>
+</div>
 
+<div class="container">
     <div id="papers">
         {% component 'papers' %}
-    </div>
 
+
+
+
+
+        <div class="record-search mb-2">
+            <div class="row">
+                <div class="col-xs-12 filter-fields-container">
+                    <div class="row between-md around-xs">
+                        <div class="col-md-6 col-xs-12 start-md center-xs">
+                            <div class="sort-field sort-dropdown">
+                                <select id="sortType" name="sortType">
+                                    <option value="0">{{'All documents' |_}}</option>
+                                    <option value="1">{{'Deliverables' |_}}</option>
+                                    <option value="2">{{'Relevant Publications' |_}}</option>
+                                    <option value="3">{{themeName}} {{'Publications' |_}}</option>
+                                </select>
+                            </div>
+
+                            <div class="sort-field sort-dropdown">
+                                <select id="sortOrder" name="sortOrder">
+                                    {% for k, sort in sortOptions %}
+                                    <option value="{{k}}">{{sort}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xs-12 end-md center-xs">
+                            <div class="clear-filter">
+                                <a id="clearFilter" href="javascript:void(0);">{{'Clear filters' |_}}</a>
+                            </div>
+<!--                            <div class="apply-filter">-->
+<!--                                <a id="applyFilter" class="btn btn-primary">{{'Apply filter' |_}}</a>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="recordsContainer">
+            {% partial 'library_records' records=library %}
+        </div>
+
+
+
+    </div>
+</div>
 
 
 <script>
