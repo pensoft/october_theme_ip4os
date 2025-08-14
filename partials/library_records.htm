@@ -1,45 +1,44 @@
 {% for record in records %}
 <div class="col-md-4 col-xs-12 library_item_container">
     <div class="row library_item">
-        <div class="col-md col-xs-12">
-            <div class="library_format">{{record.type_attr}}</div>
-            <div class="library_title">{{record.title}}</div>
-            <div class="body">
-                {% partial 'libraries-content' label="Authors:" value=record.authors %}
-                {% if record.type == 5 %}
-                {% if record.status == 1 %}
-                {% set status = 'Approved' %}
-                {% else %}
-                {% set status = 'Subject to change' %}
-                {% endif %}
-                {% else %}
-                {% set status = record.status_attr %}
-                {% endif %}
+        <div class="col-md col-xs-12 library_item_content">
+            <div>
+                <div class="library_format">{{record.type_attr}}</div>
+                <div class="library_title">{{record.title}}</div>
+                <div class="body">
+                    {% partial 'libraries-content' label="Authors:" value=record.authors %}
+                    {% if record.type == 5 %}
+                    {% if record.status == 1 %}
+                    {% set status = 'Approved' %}
+                    {% else %}
+                    {% set status = 'Subject to change' %}
+                    {% endif %}
+                    {% else %}
+                    {% set status = record.status_attr %}
+                    {% endif %}
 
-                {% partial 'libraries-content' label="Status:" value=status %}
+                    {% partial 'libraries-content' label="Status:" value=status %}
 
-                {% partial 'libraries-content' label="Year:" value=record.year_attr %}
+                    {% partial 'libraries-content' label="Year:" value=record.year_attr %}
 
-                {% partial 'libraries-content' label="Journal:" value=record.journal_title %}
-                {% partial 'libraries-content' label="Proceedings:" value=record.proceedings_title %}
-                {% partial 'libraries-content' label="Monograph:" value=record.monograph_title %}
-                {% partial 'libraries-content' label="Deliverable number:" value=record.deliverable_title %}
-                {% partial 'libraries-content' label="Project:" value=record.project_title %}
+                    {% partial 'libraries-content' label="Journal:" value=record.journal_title %}
+                    {% partial 'libraries-content' label="Proceedings:" value=record.proceedings_title %}
+                    {% partial 'libraries-content' label="Monograph:" value=record.monograph_title %}
+                    {% partial 'libraries-content' label="Deliverable number:" value=record.deliverable_title %}
+                    {% partial 'libraries-content' label="Project:" value=record.project_title %}
 
-                {% partial 'libraries-content' label="Volume/Issue:" value=record.volume_issue %}
-                {% partial 'libraries-content' label="Publisher:" value=record.publisher  %}
-                {% partial 'libraries-content' label="Place:" value=record.place  %}
-                {% partial 'libraries-content' label="City:" value=record.city  %}
-                {% partial 'libraries-content' label="Pages:" value=record.pages  %}
-
-
-                {%if record.doi %}
-                <a target="_blank" href="{{record.doi}}" class="btn btn-primary">
-                    Access the document
-                </a>
-                {%endif%}
-
+                    {% partial 'libraries-content' label="Volume/Issue:" value=record.volume_issue %}
+                    {% partial 'libraries-content' label="Publisher:" value=record.publisher  %}
+                    {% partial 'libraries-content' label="Place:" value=record.place  %}
+                    {% partial 'libraries-content' label="City:" value=record.city  %}
+                    {% partial 'libraries-content' label="Pages:" value=record.pages  %}
+                </div>
             </div>
+            {%if record.doi %}
+            <a target="_blank" href="{{record.doi}}" class="btn btn-primary">
+                Access the document
+            </a>
+            {%endif%}
         </div>
     </div>
 </div>

@@ -3,9 +3,6 @@
     padding: 0!important;
     display: flex;
     justify-content: start;
-    &:nth-child(even){
-        justify-content: end;
-    }
 }
 
 .library_item{
@@ -24,6 +21,12 @@
     font-weight: 500;
     line-height: 120%; /* 16.8px */
     letter-spacing: -0.28px;
+
+    .library_item_content{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
 
     .library_format{
         border-radius: 30px;
