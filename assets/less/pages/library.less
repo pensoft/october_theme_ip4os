@@ -1,8 +1,17 @@
+.rio_collection{
+    .breakpoint-large-down({
+        margin-bottom: 10px;
+    });
+}
+
 .library_item_container{
     position: relative;
     padding: 0!important;
     display: flex;
     justify-content: start;
+    .breakpoint-large-down({
+        justify-content: center;
+    });
 }
 
 .library_item{
@@ -10,7 +19,7 @@
     display: flex!important;
     flex-wrap: nowrap!important;
     height: 93%;
-    width: 97%;
+    width: 95%;
     margin-bottom: 50px!important;
     border-radius: 10px;
     border: 1px solid #DAEBEE;
@@ -21,6 +30,11 @@
     font-weight: 500;
     line-height: 120%; /* 16.8px */
     letter-spacing: -0.28px;
+
+    .breakpoint-large-down({
+        width: 91%;
+    });
+
 
     .library_item_content{
         display: flex;
