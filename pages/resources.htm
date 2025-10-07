@@ -20,6 +20,7 @@ description_limit = 0
 templates = "template7"
 has_search = 1
 add_file_name = 0
+no_records_message = "No records found"
 redirect_to_download_page = 0
 milestones_filter = 1
 features_filter = 1
@@ -115,6 +116,7 @@ function onDownloadFile(){
 
                 {% endif %}
                 <p class="card_title">{{ record.name|length > 65 ? record.name|striptags|slice(0, 65)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : record.name|striptags|replace({"&nbsp;": " ", ".": ". "})  }}</p>
+                
                 {% if record.description %}
                 <p class="card_description">{{ record.description|raw  }}</p>
                 {% endif %}
