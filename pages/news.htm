@@ -129,214 +129,213 @@ $this['related'] = $related;
 }
 ?>
 ==
-<div class="container">
+<main id="main-content" role="main">
+    <div class="container">
 
-    {% if is_detail_page %}
-    <div class="row single-news-item">
+        {% if is_detail_page %}
+        <article class="row single-news-item">
 
-        <div class="go_back mt-2 mb-2">
-            <a href="/news">Back to news</a>
-        </div>
+            <nav class="go_back mt-2 mb-2" aria-label="Breadcrumb">
+                <a href="/news" aria-label="Back to news listing">Back to news</a>
+            </nav>
 
-        <div class="col-xs-12">
-            {% if article.cover %}
-            <img src="{{ article.cover|crop_image|resize(743, auto, { mode: 'crop' }) }}" />
-            {% endif %}
-            {% if article.caption %}
-            <div class="caption">{{article.caption|raw}}</div>
-            {% endif %}
-        </div>
-        <div class="col-xs-12">
-            <div class="text-published">{{article.published_at|date("j M Y")}}</div>
-        </div>
-        <div class="col-xs-12 news-title">
-            <h1 class="single-new-title">{{article.title}}</h1>
-        </div>
-
-        <div class="col-xs-12">
-            <div class="content">
-                {{article.content|raw}}
+            <div class="col-xs-12">
+                {% if article.cover %}
+                <img src="{{ article.cover|crop_image|resize(743, auto, { mode: 'crop' }) }}" alt="{{article.title}}" loading="lazy" />
+                {% endif %}
+                {% if article.caption %}
+                <div class="caption">{{article.caption|raw}}</div>
+                {% endif %}
+            </div>
+            <div class="col-xs-12">
+                <time class="text-published" datetime="{{article.published_at|date('Y-m-d')}}">{{article.published_at|date("j M Y")}}</time>
+            </div>
+            <div class="col-xs-12 news-title">
+                <h1 class="single-new-title">{{article.title}}</h1>
             </div>
 
-            <div class="image-gallery">
-                {% component 'article_galleries' %}
-            </div>
-
-            <div class="row middle-xs">
-                <div class="col-xs col-md start-md center-xs share_container">
-                    <span class="share_label">Share</span>
-                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{page_url}}" target="_blank" class="pr p-linkedin normal"></a>
-                    <a href="https://bsky.app/intent/compose?text={{page_url}}" class="pr p-bluesky small"  target="_blank"></a>
+            <div class="col-xs-12">
+                <div class="content">
+                    {{article.content|raw}}
                 </div>
-            </div>
 
-        </div>
-    </div>
+                <div class="image-gallery">
+                    {% component 'article_galleries' %}
+                </div>
 
-    <div class="mt-4">
-        <h2>Other news</h2>
-        {% partial 'relatedarticles' related=related %}
-    </div>
-
-    {% else %}
-
-    <div class="category-tabs-container mb-2">
-        {% if categories.count > 0 %}
-        <!-- Custom Dropdown Structure -->
-
-        <div class="col-xs-12 filter-fields-container">
-            <div class="row">
-
-                <div class="col-md-2 col-xs-12 start-md center-xs">
-                    <div class="sort-field sort-dropdown">
-                        <select id="sortType" name="sortType">
-                            <option value="0">{{'All sources' |_}}</option>
-                            <option value="1">{{'IP4OS news' |_}}</option>
-                            <option value="2">{{'Other sources' |_}}</option>
-                        </select>
+                <div class="row middle-xs">
+                    <div class="col-xs col-md start-md center-xs share_container">
+                        <span class="share_label">Share</span>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{page_url}}" target="_blank" rel="noopener noreferrer" class="pr p-linkedin normal" aria-label="Share on LinkedIn (opens in new window)"><span class="sr-only">Share on LinkedIn (opens in new window)</span></a>
+                        <a href="https://bsky.app/intent/compose?text={{page_url}}" class="pr p-bluesky small" target="_blank" rel="noopener noreferrer" aria-label="Share on Bluesky (opens in new window)"><span class="sr-only">Share on Bluesky (opens in new window)</span></a>
                     </div>
                 </div>
 
-                    <div class="col-md-3 col-xs-12 start-md center-xs">
-                        <div class="sort-field sort-dropdown">
-                            <select id="sortTarget" name="sortTarget">
-                                <option value="0">{{'All target groups' |_}}</option>
-                                {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.name }}</option>
-                                {% endfor %}
-                            </select>
+            </div>
+        </article>
+
+        <section class="mt-4">
+            <h2>Other news</h2>
+            {% partial 'relatedarticles' related=related %}
+        </section>
+
+        {% else %}
+
+        <div class="category-tabs-container mb-2">
+            {% if categories.count > 0 %}
+            <!-- Custom Dropdown Structure -->
+
+            <div class="col-xs-12 filter-fields-container">
+                <form role="search" aria-label="Filter news articles">
+                    <div class="row">
+
+                        <div class="col-md-2 col-xs-12 start-md center-xs">
+                            <div class="sort-field sort-dropdown">
+                                <label for="sortType" class="sr-only">Filter by source</label>
+                                <select id="sortType" name="sortType" aria-label="Filter by source">
+                                    <option value="0">{{'All sources' |_}}</option>
+                                    <option value="1">{{'IP4OS news' |_}}</option>
+                                    <option value="2">{{'Other sources' |_}}</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                </div>
+                        <div class="col-md-3 col-xs-12 start-md center-xs">
+                            <div class="sort-field sort-dropdown">
+                                <label for="sortTarget" class="sr-only">Filter by target group</label>
+                                <select id="sortTarget" name="sortTarget" aria-label="Filter by target group">
+                                    <option value="0">{{'All target groups' |_}}</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            {% endif %}
         </div>
+
+        <div class="news-list">
+
+            <div class="row" id="recordsContainer" style="width: 100%;" aria-live="polite" aria-atomic="true">
+                {% partial 'articlelist' records=records %}
+            </div>
+
+        </div>
+
+        <nav class="row container" aria-label="Pagination">
+            {{ records.render|raw }}
+        </nav>
+
+
+        <script>
+            $(document).ready(function() {
+                var search_i = $('#searchInput').selectize({
+                    plugins: ["clear_button", "remove_button", "restore_on_backspace"],
+                    create: true,
+                    valueField: 'value',
+                    labelField: 'text',
+                    searchField: 'text',
+                    load: function (query, callback) {
+                        if (query.length < 1) {
+                            callback([]);
+                            return;
+                        }
+                        $.request('onSearchRecords', {
+                            data: {query: query},
+                            success: function (response) {
+                                callback(response);
+                            }
+                        });
+                    },
+                    render: {
+                        option_create: function (data, escape) {
+                            return '<div class="create">Search for: <strong>' + escape(data.input) + '</strong>&hellip;</div>';
+                        }
+                    },
+                    highlight: true,
+                    sortField: 'text',
+                    loadThrottle: 300,
+                    noResultsText: 'No results found',
+                    onChange: function (value) {
+                        updateNewsList();
+                    }
+                });
+
+
+                var select = $('#sortTarget, #sortType').selectize({
+                    onChange: function(value) {
+                        updateNewsList();
+                    }
+                });
+
+                $('#applyFilter').on('click', updateNewsList());
+
+                $('#clearFilter').on('click',function() {
+                    var selectize = select[0].selectize;
+                    selectize.setValue(0);
+                    updateNewsList();
+                });
+
+                var urlParams = window.location.search.substring(1).split('&');
+                if(urlParams.length){
+                    for(i = 0; i < urlParams.length; i++){
+                        var paramArr = urlParams[i].split('=');
+                        var paramKey = paramArr[0];
+                        var paramVal = paramArr[1];
+                        if(typeof paramVal !== 'undefined'){
+                            var selectize = select[i].selectize;
+                            selectize.setValue(paramVal);
+                            updateNewsList();
+                        }
+                    }
+                }
+            });
+
+
+            function updateNewsList() {
+                var sortType = $('#sortType').val();
+
+                if($('#sortType').length == 0){
+                    sortType = 0;
+                }
+
+                var sortTarget = $('#sortTarget').val();
+
+                $.request('onSearchRecords', {
+                    data: {
+                        sortTarget: sortTarget,
+                        sortType: sortType,
+                    },
+                    update: { 'articlelist': '#recordsContainer' }
+                });
+            }
+
+
+            function getUrlParams(){
+                var params = window.location.search.substring(1).split('&');
+                var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            }
+
+
+            $(document).keydown(function(e) {
+
+                // 191 = /
+                if (e.keyCode === 191) {
+                    e.preventDefault();
+                }
+
+                // 27 = esc
+                if (e.keyCode === 27) {
+                    e.preventDefault();
+                }
+            });
+        </script>
 
         {% endif %}
     </div>
-
-    <div class="news-list">
-
-        <div class="row" id="recordsContainer" style="width: 100%;">
-            {% partial 'articlelist' records=records %}
-        </div>
-
-
-    </div>
-
-    <div class="row container">
-        {{ records.render|raw }}
-    </div>
-
-
-    <script>
-        $(document).ready(function() {
-            var search_i = $('#searchInput').selectize({
-                plugins: ["clear_button", "remove_button", "restore_on_backspace"],
-                create: true,
-                valueField: 'value',
-                labelField: 'text',
-                searchField: 'text',
-                load: function (query, callback) {
-                    if (query.length < 1) {
-                        callback([]);
-                        return;
-                    }
-                    $.request('onSearchRecords', {
-                        data: {query: query},
-                        success: function (response) {
-                            callback(response);
-                        }
-                    });
-                },
-                render: {
-                    option_create: function (data, escape) {
-                        return '<div class="create">Search for: <strong>' + escape(data.input) + '</strong>&hellip;</div>';
-                    }
-                },
-                highlight: true,
-                sortField: 'text',
-                loadThrottle: 300,
-                noResultsText: 'No results found',
-                onChange: function (value) {
-                    updateNewsList();
-                }
-            });
-
-
-            var select = $('#sortTarget, #sortType').selectize({
-                onChange: function(value) {
-                    updateNewsList();
-                }
-            });
-
-            $('#applyFilter').on('click', updateNewsList());
-
-            $('#clearFilter').on('click',function() {
-                var selectize = select[0].selectize;
-                selectize.setValue(0);
-                updateNewsList();
-            });
-
-            var urlParams = window.location.search.substring(1).split('&');
-            if(urlParams.length){
-                for(i = 0; i < urlParams.length; i++){
-                    var paramArr = urlParams[i].split('=');
-                    var paramKey = paramArr[0];
-                    var paramVal = paramArr[1];
-                    if(typeof paramVal !== 'undefined'){
-                        var selectize = select[i].selectize;
-                        selectize.setValue(paramVal);
-                        updateNewsList();
-                    }
-                }
-            }
-        });
-
-
-        function updateNewsList() {
-            var sortType = $('#sortType').val();
-
-            if($('#sortType').length == 0){
-                sortType = 0;
-            }
-
-            var sortTarget = $('#sortTarget').val();
-
-            $.request('onSearchRecords', {
-                data: {
-                    sortTarget: sortTarget,
-                    sortType: sortType,
-                },
-                update: { 'articlelist': '#recordsContainer' }
-            });
-        }
-
-
-        function getUrlParams(){
-            var params = window.location.search.substring(1).split('&');
-            var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            // var urlparam = [];
-            // for (var i = 0; i < url.length; i++) {
-            //     urlparam[] = url[i];
-            //
-            // }
-            // return urlparam;
-        }
-
-
-        $(document).keydown(function(e) {
-
-            // 191 = /
-            if (e.keyCode === 191) {
-                e.preventDefault();
-            }
-
-            // 27 = esc
-            if (e.keyCode === 27) {
-                e.preventDefault();
-            }
-        });
-    </script>
-
-    {% endif %}
-</div>
+</main>

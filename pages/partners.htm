@@ -48,96 +48,122 @@ return Profiles::where('partner_id', $id)->where('category_id',  1)->get();
 }
 ?>
 ==
-<div class="container">
+<main id="main-content" role="main">
+    <section class="container" aria-labelledby="partners-list-heading">
+        <h1 id="partners-list-heading" class="sr-only">Partners</h1>
 
-
-    <div id="listView" class="accordion-insider-members-list">
-        {% for partner in partners %}
-        <div class="col-xs-12 partner-item">
-            <div class="row middle-xs">
-                <div class="col-xs-12 col-md-2 start-md center-xs partner_cover"><img src="{{partner.cover.thumb(156, auto, {mode: 'crop'})}}"></div>
-                <div class="col-xs-12 col-md-7 start-md center-xs partner_title"></div>
-                <div class="col-xs-12 col-md-3 end-md start-xs partner_link"><a href="{{partner.instituion_url}}" class="btn btn-primary" target="_blank">Visit website</a></div>
-
-                <div class="col-xs-12 partner_detailed_info">
-                {% if partner.content %}
-                <div class="partner_description">
-                    <div class="accordion-border key_{{key}}"><!-- 1 --><!-- css 1 -->
-                        <div class="row middle-xs accordion-toggle">
-                            <div class="col-xs start-xs">About</div>
-
-                            <div class="col-xs-2 end-xs plusminus"><span class="plus"></span></div>
-                        </div>
-
-                        <div class="accordion-content" style="display: none;">
-                            {{partner.content|raw}}
-                        </div>
+        <div id="listView" class="accordion-insider-members-list">
+            {% for partner in partners %}
+            <article class="col-xs-12 partner-item">
+                <div class="row middle-xs">
+                    <div class="col-xs-12 col-md-2 start-md center-xs partner_cover">
+                        <img src="{{partner.cover.thumb(156, auto, {mode: 'crop'})}}" alt="{{partner.instituion}} logo">
                     </div>
-                </div>
-                {% endif %}
-
-
-                {% if partner.add_description %}
-                <div class="partner_description">
-                    <div class="accordion-border key_{{key}}"><!-- 1 --><!-- css 1 -->
-                        <div class="row middle-xs accordion-toggle">
-                            <div class="col-xs start-xs">Role in IP4OS</div>
-
-                            <div class="col-xs-2 end-xs plusminus"><span class="plus"></span></div>
-                        </div>
-
-                        <div class="accordion-content" style="display: none;">
-                            {{partner.add_description|raw}}
-                        </div>
+                    <div class="col-xs-12 col-md-7 start-md center-xs partner_title">
+                        <h2>{{partner.instituion}}</h2>
                     </div>
-                </div>
-                {% endif %}
+                    <div class="col-xs-12 col-md-3 end-md start-xs partner_link">
+                        <a href="{{partner.instituion_url}}"
+                           class="btn btn-primary"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           aria-label="Visit {{partner.instituion}} website (opens in new window)">Visit website</a>
+                    </div>
 
+                    <div class="col-xs-12 partner_detailed_info">
+                        {% if partner.content %}
+                        <div class="partner_description">
+                            <div class="accordion-border key_{{key}}">
+                                <a class="row middle-xs accordion-toggle"
+                                        aria-expanded="false"
+                                        aria-controls="about-{{partner.id}}">
+                                    <span class="col-xs start-xs">About</span>
 
+                                    <span class="col-xs-2 end-xs plusminus" aria-hidden="true"><span class="plus"></span></span>
+                                </a>
 
-                {% if insider_members.getIM(partner.id).count > 0 %}
-                <div class="partner_description">
-                    <div class="accordion-border">
-                        <div class="row middle-xs accordion-toggle">
-                            <div class="col-xs start-xs">Project members</div>
-
-                            <div class="col-xs-2 end-xs plusminus"><span class="plus"></span></div>
+                                <div class="accordion-content" id="about-{{partner.id}}" hidden>
+                                    {{partner.content|raw}}
+                                </div>
+                            </div>
                         </div>
+                        {% endif %}
 
-                        <div class="accordion-content" style="display: none;">
-                                {% for profile in insider_members.getIM(partner.id) %}
-                                    <div class="contact_info row">
+
+                        {% if partner.add_description %}
+                        <div class="partner_description">
+                            <div class="accordion-border key_{{key}}">
+                                <a class="row middle-xs accordion-toggle"
+                                        aria-expanded="false"
+                                        aria-controls="role-{{partner.id}}">
+                                    <span class="col-xs start-xs">Role in IP4OS</span>
+
+                                    <span class="col-xs-2 end-xs plusminus" aria-hidden="true"><span class="plus"></span></span>
+                                </a>
+
+                                <div class="accordion-content" id="role-{{partner.id}}" hidden>
+                                    {{partner.add_description|raw}}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+
+
+                        {% if insider_members.getIM(partner.id).count > 0 %}
+                        <div class="partner_description">
+                            <div class="accordion-border">
+                                <a class="row middle-xs accordion-toggle"
+                                        aria-expanded="false"
+                                        aria-controls="members-{{partner.id}}">
+                                    <span class="col-xs start-xs">Project members</span>
+
+                                    <span class="col-xs-2 end-xs plusminus" aria-hidden="true"><span class="plus"></span></span>
+                                </a>
+
+                                <div class="accordion-content" id="members-{{partner.id}}" hidden>
+                                    {% for profile in insider_members.getIM(partner.id) %}
+                                    <article class="contact_info row">
                                         <div class="col-md-2 col-xs-12 coordinator_image">
                                             {% if profile.avatar %}
-                                            <img alt="{{ profile.names }}" src="{{profile.avatar|crop_image}}">
+                                            <img alt="{{profile.names}}" src="{{profile.avatar|crop_image}}">
                                             {% else %}
-                                            <img alt="{{ profile.names }}" src="{{ 'avatar.svg'|media }}" width="160" height="160" class="no-image">
+                                            <img alt="{{profile.names}}" src="{{ 'avatar.svg'|media }}" width="160" height="160" class="no-image">
                                             {% endif %}
                                         </div>
                                         <div class="col-md-10 col-xs-12 coordinator_info">
                                             <div class="mb-1">
                                                 <h3>{{ profile.names }}</h3>
-                                                {% if profile.email %} <div class="email"><a href="mailto:{{ profile.email }}" target="_blank">{{ profile.email }}</a></div>{% endif %}
+                                                {% if profile.email %}
+                                                <div class="email">
+                                                    <a href="mailto:{{ profile.email }}" aria-label="Email {{ profile.names }}">{{ profile.email }}</a>
+                                                </div>
+                                                {% endif %}
                                                 {% if profile.position %} <div class="">{{ profile.position }}</div>{% endif %}
                                                 {% if profile.department %} <div class="">{{ profile.department }}</div>{% endif %}
                                             </div>
 
-                                            <div class="body" style="display: none;">{{ profile.content|raw }}</div>
-                                            <p class="read-more" onclick="expandBiography(this);">Biography</p>
+                                            <div class="body" id="bio-{{profile.id}}" hidden>{{ profile.content|raw }}</div>
+                                            <a class="read-more"
+                                                    onclick="expandBiography(this);"
+                                                    aria-expanded="false"
+                                                    aria-controls="bio-{{profile.id}}"
+                                                    aria-label="Show biography for {{ profile.names }}">Biography</a>
                                         </div>
-                                    </div>
-                                {% endfor %}
+                                    </article>
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div>
+                        {% endif %}
                     </div>
-                </div>
-                {% endif %}
+
                 </div>
 
-            </div>
+            </article>
 
+            {% endfor %}
         </div>
 
-        {% endfor %}
-    </div>
-
-</div>
+    </section>
+</main>

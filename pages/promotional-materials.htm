@@ -60,48 +60,64 @@ return Response::download($pathToFile, $fileName, $headers);
 }
 ?>
 ==
-<div class="container">
-    {% set records = mediaFlyersList %}
-    {% set displayColumn = mediaFlyersList.displayColumn %}
-    {% set noRecordsMessage = mediaFlyersList.noRecordsMessage %}
-    {% set detailsPage = mediaFlyersList.detailsPage %}
-    {% set detailsKeyColumn = mediaFlyersList.detailsKeyColumn %}
-    {% set detailsUrlParameter = mediaFlyersList.detailsUrlParameter %}
+<main id="main-content" role="main">
+    <section class="container" aria-labelledby="media-heading">
+        <h1 id="media-heading" class="sr-only">Media Resources</h1>
+        {% set records = mediaFlyersList %}
+        {% set displayColumn = mediaFlyersList.displayColumn %}
+        {% set noRecordsMessage = mediaFlyersList.noRecordsMessage %}
+        {% set detailsPage = mediaFlyersList.detailsPage %}
+        {% set detailsKeyColumn = mediaFlyersList.detailsKeyColumn %}
+        {% set detailsUrlParameter = mediaFlyersList.detailsUrlParameter %}
 
-    {% if records.count() %}
-    <div class="row">
-        {% for record in records %}
-        <div class="col-md-6 col-xs-12 mb-1">
-            {{form_open({ request: 'onDownloadFile' }) }}
-            <input type="hidden" value="{{record.file.id}}" name="id">
-            <button class="flyer-container {{record.name}}" type="submit" data-attach-loading>
-                <img src="{{record.flyer_image.path}}" title="{{record.name}}">
-                <div class="name_label">{{record.name}}</div>
-            </button>
-            {{ form_close() }}
-        </div>
-        {% endfor %}
-        <div class="col-md-6 col-xs-12 mb-1">
-            <a class="flyer-container" href="{{'posters'|page}}">
-                <img src="{{'posters.png'|media}}" title="Posters">
-                <div class="name_label">Posters</div>
-            </a>
-        </div>
-        <div class="col-md-6 col-xs-12 mb-1">
-            <a class="flyer-container" href="{{'press-releases'|page}}">
-                <img src="{{'Press-releases-image.png'|media}}" title="Press releases">
-                <div class="name_label">Press releases</div>
-            </a>
-        </div>
+        {% if records.count() %}
+        <div class="row">
+            {% for record in records %}
+            <article class="col-md-6 col-xs-12 mb-1">
+                {{form_open({ request: 'onDownloadFile' }) }}
+                <input type="hidden" value="{{record.file.id}}" name="id">
+                <a class="flyer-container {{record.name}}"
+                        type="submit"
+                        data-attach-loading
+                        aria-label="Download {{record.name}}">
+                    <img src="{{record.flyer_image.path}}" alt="{{record.name}} preview">
+                    <span class="name_label">{{record.name}}</span>
+                </a>
+                {{ form_close() }}
+            </article>
+            {% endfor %}
+            <article class="col-md-6 col-xs-12 mb-1">
+                <a class="flyer-container" href="{{'posters'|page}}" aria-label="View posters">
+                    <img src="{{'posters.png'|media}}" alt="Posters preview">
+                    <span class="name_label">Posters</span>
+                </a>
+            </article>
+            <article class="col-md-6 col-xs-12 mb-1">
+                <a class="flyer-container" href="{{'press-releases'|page}}" aria-label="View press releases">
+                    <img src="{{'Press-releases-image.png'|media}}" alt="Press releases preview">
+                    <span class="name_label">Press releases</span>
+                </a>
+            </article>
 
-        
-        <div class="col-md-6 col-xs-12 mb-1">
-            <a class="flyer-container" href="https://preview.mailerlite.io/preview/1291918/emails/155642748301477858" target="_blank">
-                <img src="{{'Newsletters-image.png'|media}}" title="Newsletters">
-                <div class="name_label">Newsletters</div>
-            </a>
-        </div>
 
-    </div>
-    {% endif %}
-</div>
+            <article class="col-md-6 col-xs-12 mb-1">
+                <a class="flyer-container"
+                   href="https://preview.mailerlite.io/preview/1291918/emails/155642748301477858"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="View newsletters (opens in new window)">
+                    <img src="{{'Newsletters-image.png'|media}}" alt="Newsletters preview">
+                    <span class="name_label">Newsletters</span>
+                </a>
+            </article>
+
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-xs-12 text-center" role="status">
+                <p>{{ noRecordsMessage }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </section>
+</main>

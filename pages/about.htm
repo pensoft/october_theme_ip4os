@@ -79,76 +79,82 @@ function onStart(){
 ==
 {% component 'siteSearchInclude' %}
 
-<div class="container">
-    <div class="row about_the_project between-md around-xs">
-        <div class="col-md-5 col-xs-12">
-            <h1 class="display-1">About the project</h1>
-            {% component 'about_sub' %}
-        </div>
-        <div class="col-md-6 col-xs-12">
-            {% component 'about' %}
-            <img src="{{'about-the-project-photo.png'|media}}">
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row about_the_objectives between-md around-xs">
-        <div class="col-md-5 col-xs-12">{% component 'strategy' %}</div>
-        <div class="col-md-6 col-xs-12">
-            {% component 'strategy_content' %}
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row about_the_approach between-md around-xs">
-        <div class="col-md-5 col-xs-12">{% component 'approach' %}</div>
-        <div class="col-md-6 col-xs-12"><img src="{{'The-IP4OS-Approach.png'|media}}"></div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row about_the_objectives between-md around-xs">
-        <div class="col-md-5 col-xs-12">{% component 'objectives' %}</div>
-        <div class="col-md-6 col-xs-12">
-            {% component 'objectives_list' %}
-            <img src="{{'IP4OS-graphic.svg'|media}}" class="objectives_graphic">
-        </div>
-    </div>
-</div>
-
-
-<div class="container">
-    <div class="row about_impact between-md around-xs">
-        <div class="col-md-5 col-xs-12">{% component 'impact' %}</div>
-        <div class="col-md-12 col-xs-12">
-            {% component 'impacts_list' %}
-        </div>
-    </div>
-</div>
-
-
-<div class="container work-packages" id="work-packages">
-
-    <h2 class="underline center-xs">{{wp_title.name}}</h2>
-    <div class="center-xs">{{wp_title.body|raw}}</div>
-
-    <div class="row top-xs work_packages">
-        {% for key, item in wp_records %}
-        <div class="accordion-border key_{{key}}"><!-- 1 --><!-- css 1 -->
-            <div class="row middle-xs accordion-toggle">
-                <div class="col-xs-2 green_bullet">{{item.prefix}}</div>
-
-                <div class="col-xs start-xs">{{item.title}}</div>
-
-                <div class="col-xs-2 end-xs plusminus"><span class="plus"></span></div>
+<main id="main-content" role="main">
+    <section class="container" aria-labelledby="about-project-heading">
+        <div class="row about_the_project between-md around-xs">
+            <div class="col-md-5 col-xs-12">
+                <h1 id="about-project-heading" class="display-1">About the project</h1>
+                {% component 'about_sub' %}
             </div>
-
-            <div class="accordion-content" style="display: none;">
-                {{item.body|raw}}
+            <div class="col-md-6 col-xs-12">
+                {% component 'about' %}
+                <img src="{{'about-the-project-photo.png'|media}}" alt="About the project illustration">
             </div>
         </div>
-        {% endfor %}
-    </div>
-</div>
+    </section>
+
+    <section class="container" aria-labelledby="strategy-heading">
+        <div class="row about_the_objectives between-md around-xs">
+            <div class="col-md-5 col-xs-12">{% component 'strategy' %}</div>
+            <div class="col-md-6 col-xs-12">
+                {% component 'strategy_content' %}
+            </div>
+        </div>
+    </section>
+
+    <section class="container" aria-labelledby="approach-heading">
+        <div class="row about_the_approach between-md around-xs">
+            <div class="col-md-5 col-xs-12">{% component 'approach' %}</div>
+            <div class="col-md-6 col-xs-12">
+                <img src="{{'The-IP4OS-Approach.png'|media}}" alt="The IP4OS Approach diagram">
+            </div>
+        </div>
+    </section>
+
+    <section class="container" aria-labelledby="objectives-heading">
+        <div class="row about_the_objectives between-md around-xs">
+            <div class="col-md-5 col-xs-12">{% component 'objectives' %}</div>
+            <div class="col-md-6 col-xs-12">
+                {% component 'objectives_list' %}
+                <img src="{{'IP4OS-graphic.svg'|media}}" class="objectives_graphic" alt="IP4OS objectives graphic">
+            </div>
+        </div>
+    </section>
+
+
+    <section class="container" aria-labelledby="impact-heading">
+        <div class="row about_impact between-md around-xs">
+            <div class="col-md-5 col-xs-12">{% component 'impact' %}</div>
+            <div class="col-md-12 col-xs-12">
+                {% component 'impacts_list' %}
+            </div>
+        </div>
+    </section>
+
+
+    <section class="container work-packages" id="work-packages" aria-labelledby="work-packages-heading">
+
+        <h2 id="work-packages-heading" class="underline center-xs">{{wp_title.name}}</h2>
+        <div class="center-xs">{{wp_title.body|raw}}</div>
+
+        <div class="row top-xs work_packages">
+            {% for key, item in wp_records %}
+            <div class="accordion-border key_{{key}}">
+                <button class="row middle-xs accordion-toggle"
+                        aria-expanded="false"
+                        aria-controls="wp-content-{{key}}">
+                    <span class="col-xs-2 green_bullet">{{item.prefix}}</span>
+
+                    <span class="col-xs start-xs">{{item.title}}</span>
+
+                    <span class="col-xs-2 end-xs plusminus" aria-hidden="true"><span class="plus"></span></span>
+                </button>
+
+                <div class="accordion-content" id="wp-content-{{key}}" hidden>
+                    {{item.body|raw}}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</main>

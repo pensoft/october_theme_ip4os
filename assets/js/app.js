@@ -195,14 +195,14 @@ $(document).ready(function() {
             $active.addClass('active');
         }
 
-        if($(this).parent().parent().hasClass('resources')){
+        if($(this).parent().parent().parent().hasClass('resources')){
             $('.resources_tabs li').each(function(){
                 $(this).removeClass('active');
             });
             $active.parent().addClass('active');
         }
 
-        if($(this).parent().parent().hasClass('events')){
+        if($(this).parent().parent().parent().hasClass('events')){
             $active.addClass('active');
         }
 
@@ -281,31 +281,12 @@ $(document).ready(function() {
             $(".readmore-link").text("Read less");
         }
     });
-
-
-    // $('.view_label_1, .view_label_2, .view_label_3, .view_label_4, .view_label_5, .view_label_6').hide();
-    //
-    // $('.plus_label_1, .plus_label_2, .plus_label_3, .plus_label_4, .plus_label_5, .plus_label_6').hover(
-    //     function () {
-    //         var classname = $(this).attr('class');
-    //         var lastChar = classname[classname.length -1];
-    //         $(this).hide();
-    //         $('.view_label_'+lastChar).show();
-    //
-    //     },
-    //     function () {
-    //         // var classname = $(this).attr('class');
-    //         // var lastChar = classname[classname.length -1];
-    //         // $(this).show();
-    //         // $('.view_label_'+lastChar).hide();
-    //     }
-    // );
 });
 
 
 function expandBiography(el){
     $el = $(el) // read-more link
-    $body  = $el.parent().find('.body');
+    $body  = $el.parent().parent().find('.body');
     if($body.is(':visible')){
         $body.slideUp(300);
         $el.addClass('expanded');

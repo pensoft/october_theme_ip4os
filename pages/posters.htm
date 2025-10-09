@@ -60,35 +60,43 @@ return Response::download($pathToFile, $fileName, $headers);
 }
 ?>
 ==
-<div class="container">
-    {% set records = mediaDocumentsList %}
-    {% set displayColumn = mediaDocumentsList.displayColumn %}
-    {% set noRecordsMessage = mediaDocumentsList.noRecordsMessage %}
-    {% set detailsPage = mediaDocumentsList.detailsPage %}
-    {% set detailsKeyColumn = mediaDocumentsList.detailsKeyColumn %}
-    {% set detailsUrlParameter = mediaDocumentsList.detailsUrlParameter %}
+<main id="main-content" role="main">
+    <div class="container">
+        {% set records = mediaDocumentsList %}
+        {% set displayColumn = mediaDocumentsList.displayColumn %}
+        {% set noRecordsMessage = mediaDocumentsList.noRecordsMessage %}
+        {% set detailsPage = mediaDocumentsList.detailsPage %}
+        {% set detailsKeyColumn = mediaDocumentsList.detailsKeyColumn %}
+        {% set detailsUrlParameter = mediaDocumentsList.detailsUrlParameter %}
 
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="go_back mt-2 mb-2">
-                <a href="/promotional-materials">Back</a>
+        <div class="row">
+            <div class="col-xs-12">
+                <nav class="go_back mt-2 mb-2" aria-label="Breadcrumb">
+                    <a href="/promotional-materials" aria-label="Back to Promotional Materials">Back</a>
+                </nav>
             </div>
+        </div>
 
+        {% if records.count() %}
+        <div class="row">
+            {% for record in records %}
+            <div class="col-md-6 col-xs-12 mb-1">
+                {{form_open({ request: 'onDownloadFile' }) }}
+                <input type="hidden" value="{{record.file.id}}" name="id">
+                <button class="flyer-container {{record.name}}" type="submit" data-attach-loading aria-label="Download {{record.title}}">
+                    <img src="{{record.image.path}}" alt="Preview of {{record.title}}" loading="lazy">
+                    <span class="name_label">{{record.title}}</span>
+                </button>
+                {{ form_close() }}
+            </div>
+            {% endfor %}
         </div>
-    </div>
-    {% if records.count() %}
-    <div class="row">
-        {% for record in records %}
-        <div class="col-md-6 col-xs-12 mb-1">
-            {{form_open({ request: 'onDownloadFile' }) }}
-            <input type="hidden" value="{{record.file.id}}" name="id">
-            <button class="flyer-container {{record.name}}" type="submit" data-attach-loading>
-                <img src="{{record.image.path}}" title="{{record.title}}">
-                <div class="name_label">{{record.title}}</div>
-            </button>
-            {{ form_close() }}
+        {% else %}
+        <div class="row">
+            <div class="col-xs-12">
+                <p role="status">{{noRecordsMessage}}</p>
+            </div>
         </div>
-        {% endfor %}
+        {% endif %}
     </div>
-    {% endif %}
-</div>
+</main>

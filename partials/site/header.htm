@@ -24,16 +24,19 @@ background = "transperant"
 templates = "template3"
 description_limit = 0
 ==
-<nav class="pr-1 pl-1 navbar fixed" id="headernavbar">
+<!-- Skip to main content link -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<nav class="pr-1 pl-1 navbar fixed" id="headernavbar" aria-label="Main navigation">
     <div id="menuToggle">
-        <input type="checkbox" />
-        <span></span>
-        <span></span>
-        <span></span>
+        <input type="checkbox" id="menu-toggle-checkbox" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" />
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
         {% component 'menu' %}
     </div>
-    <a href="{{'home'|page}}" class="navbar-brand" style="background: url('{{ this.theme.site_logo.getPath() }}') center no-repeat; background-size: contain;">
-
+    <a href="{{'home'|page}}" class="navbar-brand" aria-label="Home" style="background: url('{{ this.theme.site_logo.getPath() }}') center no-repeat; background-size: contain;">
+        <span class="sr-only">Home</span>
     </a>
 
     <div class="navbar-collapse collapse end-xs" id="headerNavbarNav" style="display: none;">
@@ -41,18 +44,26 @@ description_limit = 0
 
     </div>
     <div class="search-and-social-media hidden-xs">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav" role="list">
             <li class="nav-item social">
-                <a class="pr middle search-btn" onclick="showSearchForm();"></a>
+                <a class="pr middle search-btn" onclick="showSearchForm();" aria-label="Open search" aria-expanded="false" aria-controls="search">
+                    <span class="sr-only">Search</span>
+                </a>
             </li>
         </ul>
     </div>
-    <div id="search" class="search" style="display: none;">
+    <div id="search" class="search" role="search" aria-label="Site search" style="display: none;">
         <div class="container">
-            <div class="close-search" onclick="hideSearchForm();">&#10006;</div>
+            <a class="close-search" onclick="hideSearchForm();" aria-label="Close search">
+                <span aria-hidden="true">&#10006;</span>
+                <span class="sr-only">Close</span>
+            </a>
             <form class="input-group align-items-start" action="{{ url('search')}}" method="get">
-                <input class="form-control search_input" style="color: #000;" name="q" type="text" autocomplete="on" placeholder="Search">
-                <button class="btn btn-link pr p-search big text-grey-search-btn" type="submit"></button>
+                <label for="search-input" class="sr-only">Search</label>
+                <input class="form-control search_input" id="search-input" style="color: #000;" name="q" type="text" autocomplete="on" placeholder="Search" aria-label="Search query">
+                <a class="btn btn-link pr p-search big text-grey-search-btn" type="submit" aria-label="Submit search">
+                    <span class="sr-only">Search</span>
+                </a>
             </form>
         </div>
     </div>
@@ -60,54 +71,66 @@ description_limit = 0
 </nav>
 
 
-<div class="header-image {{page_id}}">
-    <div class="header_image_overlay"></div>
+<div class="header-image {{page_id}}" role="banner">
+    <div class="header_image_overlay" aria-hidden="true"></div>
     {% if page_id == 'home' %}
-    <div class="video-carousel">
+    <div class="video-carousel" aria-label="Header video carousel">
         <div class="carousel-slide">
-            <video autoplay loop muted playsinline class="header-video-media">
+            <video autoplay loop muted playsinline class="header-video-media" aria-label="Background video showcasing project">
                 <source src="{{ 'home_intro.mp4'|media }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         </div>
     </div>
-    <div class="video-arrows">
-        <div class="video-prev"></div>
-        <div class="video-next"></div>
+    <div class="video-arrows" role="group" aria-label="Video carousel navigation">
+        <button class="video-prev" aria-label="Previous video">
+            <span class="sr-only">Previous</span>
+        </button>
+        <button class="video-next" aria-label="Next video">
+            <span class="sr-only">Next</span>
+        </button>
     </div>
     <div class="jumbotron">
         <div class="container">
             <div class="intro">
-<!--                <h1 class="intro-text" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="500" data-aos-offset="-200">-->
                 <h1 class="intro-text">
                     {{tag_line|raw}}
                 </h1>
                 <div class="home_video">
-                <a href="https://www.youtube.com/watch?v=74-GkNlBN-E" class="pulse" target="_blank"><span></span></a>
-                <a href="https://www.youtube.com/watch?v=74-GkNlBN-E" target="_blank">Introductory Video</a>
+                    <a href="https://www.youtube.com/watch?v=74-GkNlBN-E"
+                       class="pulse"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="Play introductory video (opens in new window)">
+                        <span aria-hidden="true"></span>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=74-GkNlBN-E"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="Watch introductory video on YouTube (opens in new window)">Introductory Video</a>
                 </div>
             </div>
         </div>
     </div>
     {% elseif page_id == 'coming-soon' %}
-    <h1 class="underline white">Stay tuned for the first information<br> on the manual in June 2025.</h1>
+    <h1 class="underline white">Stay tuned for the first information on the manual in June 2025.</h1>
     <div class="coming_soon_intro">{% component 'cs_best_practice' %}</div>
-    <div class="video-carousel">
+    <div class="video-carousel" aria-label="Background video">
         <div class="carousel-slide">
 
-            <video autoplay loop muted playsinline class="header-video-media">
+            <video autoplay loop muted playsinline class="header-video-media" aria-label="Background video showcasing project">
                 <source src="{{ 'home_intro.mp4'|media }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         </div>
     </div>
     {% elseif page_id == 'coming-soon-training' %}
-    <h1 class="underline white">Stay tuned for the first information<br> on the curriculum starting in 2026.</h1>
+    <h1 class="underline white">Stay tuned for the first information on the curriculum starting in 2026.</h1>
     <div class="coming_soon_intro">{% component 'cs_training' %}</div>
-    <div class="video-carousel">
+    <div class="video-carousel" aria-label="Background video">
         <div class="carousel-slide">
 
-            <video autoplay loop muted playsinline class="header-video-media">
+            <video autoplay loop muted playsinline class="header-video-media" aria-label="Background video showcasing project">
                 <source src="{{ 'home_intro.mp4'|media }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -120,7 +143,7 @@ description_limit = 0
     {% else %}
     <div class="header-image-bar" {% if user and this.page.id != 'home' %} style="margin-top: 154px!important;" {% endif %}>
         <h1 class="underline white">{% if page_title %} {{page_title}} {% else %} {{site_name}} {% endif %}</h1>
-        <video autoplay loop muted playsinline class="header-video">
+        <video autoplay loop muted playsinline class="header-video" aria-label="Background video showcasing project">
             <source src="{{ 'home_intro.mp4'|media }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>

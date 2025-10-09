@@ -28,122 +28,134 @@ use Carbon\Carbon;
 
 function onStart(){
     $this['consortium_partners'] = Partner::where('type', 1)->get();
-    $this['entries'] = Entry::where('end', '>', Carbon::now())->where('show_on_timeline', true)->where('is_internal', false)->orderBy('start', 'asc')->take(3)->get();
-    $this['highlights'] = Article::news()
-                        ->where('published_at', '<=', 'now')
-                        ->where('published', 'true')
-                        ->orderBy('published_at', 'DESC')
-                        ->take(10)
-                        ->get()
-                        ->map(function($item){
-                                $item->content = str_limit(strip_tags($item->content), 90);
-                                $item->href = $item->slug;
-                                return $item;
-                            });
+$this['entries'] = Entry::where('end', '>', Carbon::now())->where('show_on_timeline', true)->where('is_internal', false)->orderBy('start', 'asc')->take(3)->get();
+$this['highlights'] = Article::news()
+->where('published_at', '<=', 'now')
+->where('published', 'true')
+->orderBy('published_at', 'DESC')
+->take(10)
+->get()
+->map(function($item){
+$item->content = str_limit(strip_tags($item->content), 90);
+$item->href = $item->slug;
+return $item;
+});
 }
 ?>
 ==
-<div class="container">
-    <div class="row">
-        <div class="col-md-6 col-xs-12">
-            <a class="mission" href="/about">
-                <h1 class="display-1">Mission</h1>
-                {% component 'mission' %}
-            </a>
+<main id="main-content" role="main">
+    <section class="container" aria-labelledby="mission-vision-heading">
+        <h1 id="mission-vision-heading" class="sr-only">Mission and Vision</h1>
+        <div class="row">
+            <article class="col-md-6 col-xs-12">
+                <a class="mission" href="/about" aria-label="Learn more about our mission">
+                    <h2 class="display-1">Mission</h2>
+                    {% component 'mission' %}
+                </a>
+            </article>
+            <article class="col-md-6 col-xs-12">
+                <a class="mission" href="/about" aria-label="Learn more about our vision">
+                    <h2 class="display-1">Vision</h2>
+                    {% component 'vision' %}
+                </a>
+            </article>
         </div>
-        <div class="col-md-6 col-xs-12">
-            <a class="mission" href="/about">
-                <h1 class="display-1">Vision</h1>
-                {% component 'vision' %}
-            </a>
+    </section>
+
+    {% if highlights.count %}
+    <!-- latest from news -->
+    <section class="container-fluid highlights-news" aria-labelledby="latest-news-heading">
+        <div class="container">
+            <h2 id="latest-news-heading" class="display-1">Latest news from and beyond the project</h2>
         </div>
-    </div>
-</div>
 
-{% if highlights.count %}
-<!-- latest from news -->
-<div class="container-fluid highlights-news">
-    <div class="container">
-        <h1 class="display-1">Latest news from and<br> beyond the project</h1>
-    </div>
+        <a class="trigger_prev" aria-label="Previous news article">
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="trigger_next" aria-label="Next news article">
+            <span class="sr-only">Next</span>
+        </a>
 
-    <div class="trigger_prev"></div>
-    <div class="trigger_next"></div>
+        <div class="news-carousel" role="region" aria-label="News carousel">
+            {% for highlight in highlights %}
 
-    <div class="news-carousel">
-        {% for highlight in highlights %}
-
-        <div class="home-news-highlights">
-            <div class="row news-item">
-                <div class="col-md-12 col-xs-12 home-news-cover">
-                    <a href="/news/{{highlight.slug}}">
-                        <img src="{{ highlight.cover.thumb(357, 221, {'mode': 'crop'})}}" alt="{{ highlight.title }}">
-                    </a>
-                    {% if highlight.external == 0 %}
-                    <div class="internal_label">IP4OS News</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-12 col-xs-12 news-content">
-                    <p class="news-date">{{ highlight.published_at|date('d M Y') }}</p>
-                    <a href="/news/{{highlight.slug}}">
-                        <div class="news-title">{{ highlight.title|length > 80 ? highlight.title|slice(0, 80)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : highlight.title|replace({"&nbsp;": " ", ".": ". "})  }}</div>
-                    </a>
-                    <div class="row read-more-row">
-                        <a href="/news/{{highlight.slug}}" class="read-more">{{'Read more' |_}}</a>
+            <article class="home-news-highlights">
+                <div class="row news-item">
+                    <div class="col-md-12 col-xs-12 home-news-cover">
+                        <a href="/news/{{highlight.slug}}" aria-label="Read {{highlight.title}}">
+                            <img src="{{ highlight.cover.thumb(357, 221, {'mode': 'crop'})}}" alt="{{highlight.title}}">
+                        </a>
+                        {% if highlight.external == 0 %}
+                        <div class="internal_label" role="status">IP4OS News</div>
+                        {% endif %}
                     </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    <div class="center-xs">
-        <a class="btn btn-primary view_all" href="{{'news'|page}}">View all</a>
-    </div>
-</div>
-{% endif %}
-
-<p>&nbsp;</p>
-
-{% if entries.count %}
-    <div class="container">
-        <h1 class="display-1">Upcoming events on Open<br> Science and Intellectual Property</h1>
-        <div class="row event-items">
-        {% for event in entries %}
-                <div class="col-md-4 col-xs-12">
-                    <div class="event_item">
-                        <div>
-                            <p class="news-date">{{ event.start|date('d M Y') }}</p>
-                            <a href="{{'events'|page}}/{{event.slug}}">
-                                <div class="news-title">{{ event.title|length > 70 ? event.title|slice(0, 70)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : event.title|replace({"&nbsp;": " ", ".": ". "})  }}</div>
-                            </a>
+                    <div class="col-md-12 col-xs-12 news-content">
+                        <time class="news-date" datetime="{{highlight.published_at|date('Y-m-d')}}">{{ highlight.published_at|date('d M Y') }}</time>
+                        <a href="/news/{{highlight.slug}}" aria-label="Read {{highlight.title}}">
+                            <h3 class="news-title">{{ highlight.title|length > 80 ? highlight.title|slice(0, 80)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : highlight.title|replace({"&nbsp;": " ", ".": ". "})  }}</h3>
+                        </a>
+                        <div class="row read-more-row">
+                            <a href="/news/{{highlight.slug}}" class="read-more" aria-label="Read more about {{highlight.title}}">Read more</a>
                         </div>
-                        <a href="{{'events'|page}}/{{event.slug}}" class="read-more">{{'Read more' |_}}</a>
                     </div>
                 </div>
-        {% endfor %}
+            </article>
+            {% endfor %}
         </div>
-    </div>
+        <div class="center-xs">
+            <a class="btn btn-primary view_all" href="{{'news'|page}}">View all news</a>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if entries.count %}
+    <section class="container" aria-labelledby="upcoming-events-heading">
+        <h2 id="upcoming-events-heading" class="display-1">Upcoming events on Open Science and Intellectual Property</h2>
+        <div class="row event-items">
+            {% for event in entries %}
+            <article class="col-md-4 col-xs-12">
+                <div class="event_item">
+                    <div>
+                        <time class="news-date" datetime="{{event.start|date('Y-m-d')}}">{{ event.start|date('d M Y') }}</time>
+                        <a href="{{'events'|page}}/{{event.slug}}" aria-label="Read more about {{event.title}}">
+                            <h3 class="news-title">{{ event.title|length > 70 ? event.title|slice(0, 70)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : event.title|replace({"&nbsp;": " ", ".": ". "})  }}</h3>
+                        </a>
+                    </div>
+                    <a href="{{'events'|page}}/{{event.slug}}" class="read-more" aria-label="Read more about {{event.title}}">Read more</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
 
     <div class="container center-xs padding0">
-        <a class="btn btn-primary view_all" href="{{'events'|page}}">View all</a>
+        <a class="btn btn-primary view_all" href="{{'events'|page}}">View all events</a>
     </div>
 
-{% endif %}
+    {% endif %}
 
 
-<div class="container">
-    <div class="row middle-xs between-xs consortium_partners">
-        <div class="col-xs-12 center-xs mb-1 mt-2"><h1 class="display-1">Meet the partners behind<br> the project</h1></div>
-        <div class="col-xs-12 center-xs">
-            <div class="row">
-                {% for c in consortium_partners %}
-                <div class="col-md-3 col-xs-6">
-                    <div class="partner_logo"><a href="{{c.instituion_url}}" target="_blank">
-                        <img alt="{{ c.instituion }}" src="{{c.cover.thumb(auto,86,{'mode':'crop'})}}"></a>
-                    </div>
-                </div>
-                {% endfor %}
+    <section class="container" aria-labelledby="partners-heading">
+        <div class="row middle-xs between-xs consortium_partners">
+            <div class="col-xs-12 center-xs mb-1 mt-2">
+                <h2 id="partners-heading" class="display-1">Meet the partners behind the project</h2>
             </div>
+            <nav class="col-xs-12 center-xs" aria-label="Partner organizations">
+                <div class="row">
+                    {% for c in consortium_partners %}
+                    <div class="col-md-3 col-xs-6">
+                        <div class="partner_logo">
+                            <a href="{{c.instituion_url}}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               aria-label="Visit {{c.instituion}} website (opens in new window)">
+                                <img alt="{{c.instituion}} logo" src="{{c.cover.thumb(auto,86,{'mode':'crop'})}}">
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </nav>
         </div>
-    </div>
-</div>
+    </section>
+</main>

@@ -40,51 +40,49 @@ $this['press_items'] = $records;
 }
 ?>
 ==
-<div class="container">
-
-    <div class="row">
-        <div class="col-xs-1">
-            <div class="go_back mt-2 mb-2">
-                <a href="/promotional-materials">Back</a>
+<main id="main-content" role="main">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-1">
+                <nav class="go_back mt-2 mb-2" aria-label="Breadcrumb">
+                    <a href="/promotional-materials" aria-label="Back to Promotional Materials">Back</a>
+                </nav>
             </div>
+            <div class="col-xs-11 arrow_project_news">
 
-        </div>
-        <div class="col-xs-11 arrow_project_news">
+                <div class="category-tabs-container mb-2">
+                    {% if categories.count > 0 %}
+                    <nav class="row category-tabs" id="category-tabs" aria-label="Press release categories">
+                        <a href="{{ 'press-releasses'|page }}?categoryId=all" aria-current="{{ 'all' == categoryId ? 'page' : 'false' }}" aria-label="View all press releases">All Press Releases</a>
+                        {% for category in categories %}
+                        <a href="{{ 'press-releasses'|page }}?categoryId={{ category.id }}" aria-current="{{ category.id == categoryId ? 'page' : 'false' }}" aria-label="View {{ category.title }} press releases">{{ category.title }}</a>
+                        {% endfor %}
+                    </nav>
+                    {% endif %}
+                </div>
 
-            <div class="category-tabs-container mb-2">
-                {% if categories.count > 0 %}
-                <div class="row category-tabs" id="category-tabs">
-                    <a href="{{ 'press-releasses'|page }}?categoryId=all" class="{{ 'all' == categoryId ? 'active' : '' }}">All Press Releases</a>
-                    {% for category in categories %}
-                    <a href="{{ 'press-releasses'|page }}?categoryId={{ category.id }}" class="{{ category.id == categoryId ? 'active' : '' }}">{{ category.title }}</a>
+                <div class="row">
+                    {% for record in press_items %}
+                    {% spaceless %}
+                    <article class="col-md-12 col-xs-12 press-relies-item">
+                        <time class="date" datetime="{{record.date|date('Y-m-d')}}">{{record.date|date('j F Y')}}</time>
+                        <h3 class="card-title">{{record.name}}</h3>
+                        <div class="body">{{record.description | raw}}</div>
+                        <div class="row link mt-1">
+                            {% for link in record.link %}
+                            <a href="{{link.url}}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-right: 10px;" aria-label="{{link.text}} (opens in new window)">{{link.text}}<span class="sr-only"> (opens in new window)</span></a>
+                            {% endfor %}
+                        </div>
+                    </article>
+                    {% endspaceless %}
+                    {% else %}
+                    <p role="status">No press releases</p>
                     {% endfor %}
                 </div>
-                {% endif %}
-            </div>
-
-
-            <div class="row">
-                {% for record in press_items %}
-                {% spaceless %}
-                <div class="col-md-12 col-xs-12 press-relies-item">
-                    <div class="date">{{record.date|date('j F Y')}}</div>
-                    <h3 class="card-title">{{record.name}}</h3>
-                    <div class="body">{{record.description | raw}}</div>
-                    <div class="row link mt-1">
-                        {% for link in record.link %}
-                        <a href="{{link.url}}" target="_blank" class="btn btn-primary" style="margin-right: 10px;">{{link.text}}</a>
-                        {% endfor %}
-                    </div>
+                <div class="row">
+                    {{ records.render|raw }}
                 </div>
-
-                {% endspaceless %}
-                {% else %}
-                No press releases
-                {% endfor %}
-            </div>
-            <div class="row">
-                {{ records.render|raw }}
             </div>
         </div>
     </div>
-</div>
+</main>

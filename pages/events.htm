@@ -91,239 +91,252 @@ $this['slug'] = $this->param('slug');
 ?>
 ==
 {% if not slug %}
-<div class="container">
-    <div class="events_tabs">
-        <a class="" href="#listView">&nbsp;</a>
-        <a class="" href="#calendarView">&nbsp;</a>
-    </div>
-</div>
-<!--tabs content	-->
-<div class="container-fluid">
+<main id="main-content" role="main">
     <div class="container">
+        <nav class="events_tabs" aria-label="Event view options">
+            <a href="#listView" role="tab" aria-controls="listView" aria-selected="true"><span class="sr-only">List View</span></a>
+            <a href="#calendarView" role="tab" aria-controls="calendarView" aria-selected="false"><span class="sr-only">Calendar View</span></a>
+        </nav>
+    </div>
+    <!--tabs content	-->
+    <div class="container-fluid">
+        <div class="container">
 
-        <div class="row" id="listView">
-            <div class="category-tabs-container mb-2">
-                {% if categories.count > 0 %}
-                <!-- Custom Dropdown Structure -->
+            <section class="row" id="listView" role="tabpanel" aria-labelledby="listView-tab">
+                <div class="category-tabs-container mb-2">
+                    {% if categories.count > 0 %}
+                    <!-- Custom Dropdown Structure -->
 
-                <div class="col-xs-12 filter-fields-container">
-                    <div class="row">
+                    <div class="col-xs-12 filter-fields-container">
+                        <form role="search" aria-label="Filter events">
+                            <div class="row">
 
-                        <div class="col-md-2 col-xs-12 start-md center-xs">
-                            <div class="sort-field sort-dropdown">
-                                <select id="sortType" name="sortType">
-                                    <option value="0">{{'All' |_}}</option>
-                                    <option value="1">{{'IP4OS organized' |_}}</option>
-                                    <option value="2">{{'IP4OS involved' |_}}</option>
-                                </select>
+                                <div class="col-md-2 col-xs-12 start-md center-xs">
+                                    <div class="sort-field sort-dropdown">
+                                        <label for="sortType" class="sr-only">Filter by event type</label>
+                                        <select id="sortType" name="sortType" aria-label="Filter by event type">
+                                            <option value="0">{{'All' |_}}</option>
+                                            <option value="1">{{'IP4OS organized' |_}}</option>
+                                            <option value="2">{{'IP4OS involved' |_}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-xs-12 start-md center-xs">
+                                    <div class="sort-field sort-dropdown">
+                                        <label for="sortTarget" class="sr-only">Filter by target group</label>
+                                        <select id="sortTarget" name="sortTarget" aria-label="Filter by target group">
+                                            <option value="0">{{'All target groups' |_}}</option>
+                                            {% for category in categories %}
+                                            <option value="{{ category.id }}">{{ category.title }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
                             </div>
-                        </div>
-
-                        <div class="col-md-3 col-xs-12 start-md center-xs">
-                            <div class="sort-field sort-dropdown">
-                                <select id="sortTarget" name="sortTarget">
-                                    <option value="0">{{'All target groups' |_}}</option>
-                                    {% for category in categories %}
-                                    <option value="{{ category.id }}">{{ category.title }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-
+                        </form>
                     </div>
+
+                    {% endif %}
                 </div>
 
+
+                <div class="events_list_container" id="recordsContainer" aria-live="polite" aria-atomic="true">
+                    {% partial 'eventslist' records=records %}
+                </div>
+
+
+                {% if records.count > 20 %}
+                <nav class="row container" aria-label="Pagination">
+                    {{ records.fragment('listView').render|raw }}
+                </nav>
                 {% endif %}
-            </div>
 
 
-            <div class="events_list_container" id="recordsContainer">
-                {% partial 'eventslist' records=records %}
-            </div>
-
-
-            {% if records.count > 20 %}
-            <div class="row container">
-                {{ records.fragment('listView').render|raw }}
-            </div>
-            {% endif %}
-
-
-            <script>
-                $(document).ready(function() {
-                    var search_i = $('#searchInput').selectize({
-                        plugins: ["clear_button", "remove_button", "restore_on_backspace"],
-                        create: true,
-                        valueField: 'value',
-                        labelField: 'text',
-                        searchField: 'text',
-                        load: function (query, callback) {
-                            if (query.length < 1) {
-                                callback([]);
-                                return;
-                            }
-                            $.request('onSearchRecords', {
-                                data: {query: query},
-                                success: function (response) {
-                                    callback(response);
+                <script>
+                    $(document).ready(function() {
+                        var search_i = $('#searchInput').selectize({
+                            plugins: ["clear_button", "remove_button", "restore_on_backspace"],
+                            create: true,
+                            valueField: 'value',
+                            labelField: 'text',
+                            searchField: 'text',
+                            load: function (query, callback) {
+                                if (query.length < 1) {
+                                    callback([]);
+                                    return;
                                 }
-                            });
-                        },
-                        render: {
-                            option_create: function (data, escape) {
-                                return '<div class="create">Search for: <strong>' + escape(data.input) + '</strong>&hellip;</div>';
-                            }
-                        },
-                        highlight: true,
-                        sortField: 'text',
-                        loadThrottle: 300,
-                        noResultsText: 'No results found',
-                        onChange: function (value) {
-                            updateEventsList();
-                        }
-                    });
-
-
-                    var select = $('#sortTarget, #sortType').selectize({
-                        onChange: function(value) {
-                            updateEventsList();
-                        }
-                    });
-
-                    $('#applyFilter').on('click', updateEventsList());
-
-                    $('#clearFilter').on('click',function() {
-                        var selectize = select[0].selectize;
-                        selectize.setValue(0);
-                        updateEventsList();
-                    });
-
-                    var urlParams = window.location.search.substring(1).split('&');
-                    if(urlParams.length){
-                        for(i = 0; i < urlParams.length; i++){
-                            var paramArr = urlParams[i].split('=');
-                            var paramKey = paramArr[0];
-                            var paramVal = paramArr[1];
-                            if(typeof paramVal !== 'undefined'){
-                                var selectize = select[i].selectize;
-                                selectize.setValue(paramVal);
+                                $.request('onSearchRecords', {
+                                    data: {query: query},
+                                    success: function (response) {
+                                        callback(response);
+                                    }
+                                });
+                            },
+                            render: {
+                                option_create: function (data, escape) {
+                                    return '<div class="create">Search for: <strong>' + escape(data.input) + '</strong>&hellip;</div>';
+                                }
+                            },
+                            highlight: true,
+                            sortField: 'text',
+                            loadThrottle: 300,
+                            noResultsText: 'No results found',
+                            onChange: function (value) {
                                 updateEventsList();
                             }
+                        });
+
+
+                        var select = $('#sortTarget, #sortType').selectize({
+                            onChange: function(value) {
+                                updateEventsList();
+                            }
+                        });
+
+                        $('#applyFilter').on('click', updateEventsList());
+
+                        $('#clearFilter').on('click',function() {
+                            var selectize = select[0].selectize;
+                            selectize.setValue(0);
+                            updateEventsList();
+                        });
+
+                        var urlParams = window.location.search.substring(1).split('&');
+                        if(urlParams.length){
+                            for(i = 0; i < urlParams.length; i++){
+                                var paramArr = urlParams[i].split('=');
+                                var paramKey = paramArr[0];
+                                var paramVal = paramArr[1];
+                                if(typeof paramVal !== 'undefined'){
+                                    var selectize = select[i].selectize;
+                                    selectize.setValue(paramVal);
+                                    updateEventsList();
+                                }
+                            }
                         }
-                    }
-                });
-
-
-                function updateEventsList() {
-                    var sortType = $('#sortType').val();
-
-                    if($('#sortType').length == 0){
-                        sortType = 0;
-                    }
-
-                    var sortTarget = $('#sortTarget').val();
-
-                    $.request('onSearchRecords', {
-                        data: {
-                            sortTarget: sortTarget,
-                            sortType: sortType,
-                        },
-                        update: { 'articlelist': '#recordsContainer' }
                     });
-                }
 
 
-                function getUrlParams(){
-                    var params = window.location.search.substring(1).split('&');
-                    var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-                }
+                    function updateEventsList() {
+                        var sortType = $('#sortType').val();
 
+                        if($('#sortType').length == 0){
+                            sortType = 0;
+                        }
 
-                $(document).keydown(function(e) {
+                        var sortTarget = $('#sortTarget').val();
 
-                    // 191 = /
-                    if (e.keyCode === 191) {
-                        e.preventDefault();
+                        $.request('onSearchRecords', {
+                            data: {
+                                sortTarget: sortTarget,
+                                sortType: sortType,
+                            },
+                            update: { 'articlelist': '#recordsContainer' }
+                        });
                     }
 
-                    // 27 = esc
-                    if (e.keyCode === 27) {
-                        e.preventDefault();
+
+                    function getUrlParams(){
+                        var params = window.location.search.substring(1).split('&');
+                        var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
                     }
-                });
-            </script>
 
-            {% if past_entries.count  %}
-                <h2 style="margin-top: 50px;">Past events</h2>
-                <div class="events_list_container">
-                {% for entry in past_entries %}
-                {% set url = entry.url ?  entry.url : '/events/' ~ entry.slug %}
 
-                    <div class="row entry_item middle-xs">
-                        <div class="col-md-1 col-xs-12 date_container">
-                            <span class="date_day">{{entry.start|date("j")}}</span>
-                            <span class="date_month">{{entry.start|date("M")}}</span>
-                            <span class="date_year">{{entry.start|date("Y")}}</span>
-                        </div>
-                        <div class="col-md-9 col-xs-12 body_container">
-                            {% if entry.cover_image %}
-                            <a href="{{url}}" target="_blank">
-                                <img src="{{entry.cover_image.getThumb(auto, auto, {'mode': 'crop'})}}">
-                            </a>
-                            {% endif %}
-                            <a href="{{url}}" target="_blank" class="date_week">
-                                {{entry.title|raw}}
-                            </a>
+                    $(document).keydown(function(e) {
 
-                        </div>
-                        <div class="col-md-2 col-xs-12 read-more-events center-md center-xs">
-                            <a href="{{url}}" target="_blank" class="read-more">Read more</a>
-                        </div>
+                        // 191 = /
+                        if (e.keyCode === 191) {
+                            e.preventDefault();
+                        }
+
+                        // 27 = esc
+                        if (e.keyCode === 27) {
+                            e.preventDefault();
+                        }
+                    });
+                </script>
+
+                {% if past_entries.count  %}
+                <section aria-labelledby="past-events-heading">
+                    <h2 id="past-events-heading" style="margin-top: 50px;">Past events</h2>
+                    <div class="events_list_container">
+                        {% for entry in past_entries %}
+                        {% set url = entry.url ?  entry.url : '/events/' ~ entry.slug %}
+
+                        <article class="row entry_item middle-xs">
+                            <div class="col-md-1 col-xs-12 date_container">
+                                <time datetime="{{entry.start|date('Y-m-d')}}">
+                                    <span class="date_day">{{entry.start|date("j")}}</span>
+                                    <span class="date_month">{{entry.start|date("M")}}</span>
+                                    <span class="date_year">{{entry.start|date("Y")}}</span>
+                                </time>
+                            </div>
+                            <div class="col-md-9 col-xs-12 body_container">
+                                {% if entry.cover_image %}
+                                <a href="{{url}}" target="_blank" rel="noopener noreferrer" aria-label="View {{entry.title}} (opens in new window)">
+                                    <img src="{{entry.cover_image.getThumb(auto, auto, {'mode': 'crop'})}}" alt="{{entry.title}}" loading="lazy">
+                                </a>
+                                {% endif %}
+                                <a href="{{url}}" target="_blank" rel="noopener noreferrer" class="date_week" aria-label="{{entry.title}} (opens in new window)">
+                                    {{entry.title|raw}}
+                                </a>
+
+                            </div>
+                            <div class="col-md-2 col-xs-12 read-more-events center-md center-xs">
+                                <a href="{{url}}" target="_blank" rel="noopener noreferrer" class="read-more" aria-label="Read more about {{entry.title}} (opens in new window)">Read more</a>
+                            </div>
+                        </article>
+
+                        {% endfor %}
                     </div>
+                </section>
+                {% endif %}
+            </section>
+            <section class="row" id="calendarView" role="tabpanel" aria-labelledby="calendarView-tab">
+                {% component 'calendar' %}
+            </section>
+        </div>
 
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-        <div class="row" id="calendarView">
-            {% component 'calendar' %}
-        </div>
     </div>
-
-</div>
-
+</main>
 
 {% else %}
 
-<div class="row single-news-item">
-    <div class="col-md-2 col-xs-12">
-        <div class="date_container">
-            <span class="date_day">{{entry.start|date("j")}}</span>
-            <span class="date_month">{{entry.start|date("M")}}</span>
-            <span class="date_year">{{entry.start|date("Y")}}</span>
-        </div>
-    </div>
-    <div class="col-md-10 col-xs-12">
-        {% if entry.cover %}
-        <img src="{{ entry.cover_image|crop_image|resize(743, auto, { mode: 'crop' }) }}" />
-        {% endif %}
-        <div class="location">
-            {{entry.place}}
-        </div>
-        <div class="news-title">
-            <h1 class="single-new-title">{{entry.title}}</h1>
-        </div>
-        <div class="content">
-            {{entry.description|raw}}
-        </div>
-        <div class="row middle-xs">
-            <div class="col-xs col-md start-md center-xs share_container">
-                <span class="share_label">Share</span>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{page_url}}" target="_blank" class="pr p-linkedin normal"></a>
-                <a href="https://bsky.app/intent/compose?text={{page_url}}" class="pr p-bluesky small"  target="_blank"></a>
+<main id="main-content" role="main">
+    <article class="row single-news-item">
+        <div class="col-md-2 col-xs-12">
+            <div class="date_container">
+                <time datetime="{{entry.start|date('Y-m-d')}}">
+                    <span class="date_day">{{entry.start|date("j")}}</span>
+                    <span class="date_month">{{entry.start|date("M")}}</span>
+                    <span class="date_year">{{entry.start|date("Y")}}</span>
+                </time>
             </div>
         </div>
-    </div>
-</div>
+        <div class="col-md-10 col-xs-12">
+            {% if entry.cover %}
+            <img src="{{ entry.cover_image|crop_image|resize(743, auto, { mode: 'crop' }) }}" alt="{{entry.title}}" loading="lazy" />
+            {% endif %}
+            <div class="location">
+                <span aria-label="Event location">{{entry.place}}</span>
+            </div>
+            <div class="news-title">
+                <h1 class="single-new-title">{{entry.title}}</h1>
+            </div>
+            <div class="content">
+                {{entry.description|raw}}
+            </div>
+            <div class="row middle-xs">
+                <div class="col-xs col-md start-md center-xs share_container">
+                    <span class="share_label">Share</span>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{page_url}}" target="_blank" rel="noopener noreferrer" class="pr p-linkedin normal" aria-label="Share on LinkedIn (opens in new window)"><span class="sr-only">Share on LinkedIn (opens in new window)</span></a>
+                    <a href="https://bsky.app/intent/compose?text={{page_url}}" class="pr p-bluesky small" target="_blank" rel="noopener noreferrer" aria-label="Share on Bluesky (opens in new window)"><span class="sr-only">Share on Bluesky (opens in new window)</span></a>
+                </div>
+            </div>
+        </div>
+    </article>
+</main>
 
 {% endif %}

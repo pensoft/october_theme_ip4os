@@ -17,8 +17,10 @@ templates = "template3"
 description_limit = 0
 ==
 {% component 'siteSearchInclude' %}
-<div class="container800">
-{% component 'jumbotron' %}
-{% partial 'teams' %}
-{% component 'jumbotron2' %}
-</div>
+<main id="main-content" role="main">
+    <section class="container800">
+        {% component 'jumbotron' %}
+        {% partial 'teams' %}
+        {% component 'jumbotron2' %}
+    </section>
+</main>

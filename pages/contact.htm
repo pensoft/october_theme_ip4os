@@ -17,30 +17,33 @@ function onStart(){
 ?>
 ==
 {% component 'siteSearchInclude' %}
-<div class="container800">
-    <div class="row ">
-        {% for profile in profiles %}
-        <div class="col-md-6 col-xs-12 profile-item">
-            <div class="row contact_info">
-                <div class="coordinator_image">
-                    <img src="{{profile.avatar.thumb(324, 274, {'mode' : 'crop' })}}">
-                </div>
-                <div class="coordinator_info">
-                    <div>
-                        <h3>{{profile.names}}</h3>
-                        {% if profile.position %} {{profile.position}} {% endif %}
+<main id="main-content" role="main">
+    <div class="container800">
+        <div class="row">
+            {% for profile in profiles %}
+            <article class="col-md-6 col-xs-12 profile-item">
+                <div class="row contact_info">
+                    <div class="coordinator_image">
+                        <img src="{{profile.avatar.thumb(324, 274, {'mode' : 'crop' })}}" alt="{{profile.names}}" loading="lazy">
                     </div>
-                    <div>
-                        {% if profile.email %}
-                            <a href="mailto:{{profile.email}}" class="btn btn-primary mail">
-                                <i></i>{{profile.email}}
+                    <div class="coordinator_info">
+                        <div>
+                            <h3>{{profile.names}}</h3>
+                            {% if profile.position %}
+                            <p class="position">{{profile.position}}</p>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% if profile.email %}
+                            <a href="mailto:{{profile.email}}" class="btn btn-primary mail" aria-label="Email {{profile.names}} at {{profile.email}}">
+                                <i aria-hidden="true"></i>{{profile.email}}
                             </a>
-                        {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </article>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-
-</div>
+</main>
