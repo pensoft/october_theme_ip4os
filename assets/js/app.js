@@ -413,7 +413,7 @@ function isBreakpointLarge() {
 function showSearchForm(){
 	$('#layout-header').toggleClass('full-width');
 	$('#search').toggle();
-	$('.navbar a.p-search').css('visibility', 'hidden');
+	// $('.navbar a.p-search').css('visibility', 'hidden');
 	// $('#menu li').hide();
 	// $('nav a:not(.navbar-brand)').hide();
 }
