@@ -457,17 +457,19 @@
 
 }
 
-.graphic_svg.scrolled{
+.graphic_svg, .graphic_svg.scrolled{
     padding: 0;
     position: relative;
     padding-bottom: 400px;
     .breakpoint-large-down({
-        padding-bottom: 800px;
+        padding-bottom: 850px;
+        overflow: hidden;
     });
     svg{
         width: auto;
         position: absolute;
         margin-top: -26%;
+        max-width: 100%;
     }
 
     .draw-path {
