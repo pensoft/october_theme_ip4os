@@ -284,6 +284,27 @@ $(document).ready(function() {
 });
 
 
+function elementScrolled(elem) {
+    var docViewTop = $(window).scrollTop();
+    var docViewBottom = docViewTop + $(window).height();
+    if($(elem).offset()){
+        var elemTop = $(elem).offset().top;
+        return ((elemTop <= docViewBottom) && (elemTop >= docViewTop));
+    }
+
+}
+
+$(window).scroll(function(){
+    // This is then function used to detect if the element is scrolled into view
+    if(elementScrolled('.graphic_svg path')) {
+        $('.graphic_svg').addClass('scrolled');
+    }else{
+        $('.graphic_svg').removeClass('scrolled');
+    }
+});
+
+
+
 function expandBiography(el){
     $el = $(el) // read-more link
     $body  = $el.parent().parent().find('.body');

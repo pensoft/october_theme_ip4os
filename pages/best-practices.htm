@@ -1,0 +1,104 @@
+url = "/best-practices"
+layout = "default"
+title = "Best practices"
+
+[siteSearchInclude]
+
+[jumbotron synergy]
+jumbotron = "ip4os-synergy-framework-reconciling-intellectual-property-and-open-science"
+title = 1
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron foundation]
+jumbotron = "rigorous-evidence-based-foundation"
+title = 1
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron framework]
+jumbotron = "key-findings-driving-framework"
+title = 1
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron framework_items]
+jumbotron = "knowledge-gaps"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron alignment]
+jumbotron = "practical-pathways-alignment"
+title = 1
+background = "transperant"
+templates = "template3"
+description_limit = 0
+==
+<?php
+
+function onStart(){
+    $this['is_mobile'] = false;
+    if (class_exists('\Jenssegers\Agent\Agent')) {
+        $Agent = new \Jenssegers\Agent\Agent();
+        if ($Agent->isMobile()){
+            $this['is_mobile'] = true;
+        }
+    }
+}
+
+?>
+==
+{% component 'siteSearchInclude' %}
+
+<main id="main-content" role="main">
+    <section class="container synergy" aria-label="The IP4OS Synergy Framework: reconciling intellectual property and open science">
+        <div class="row between-md around-xs middle-xs">
+            <div class="col-md-8 col-xs-12">
+                {% component 'synergy' %}
+            </div>
+            <div class="col-md-4 col-xs-12 end-md center-xs">
+                <img src="{{'best-practices.svg'|media}}" alt="The IP4OS Synergy Framework: reconciling intellectual property and open science
+ illustration">
+            </div>
+        </div>
+    </section>
+    <section class="container foundation" aria-labelle="A rigorous, evidence-based foundation">
+        {% component 'foundation' %}
+    </section>
+
+    <section class="container findings" aria-label="Key findings driving the framework">
+        <div class="row between-md around-xs">
+            <div class="col-md-6 col-xs-12">
+                {% component 'framework' %}
+            </div>
+            <div class="col-md-6 col-xs-12 gaps">
+                {% component 'framework_items' %}
+            </div>
+        </div>
+    </section>
+
+    <section class="container" aria-label="Practical pathways for alignment">
+        <div class="row between-md around-xs">
+            <div class="col-md-6 col-xs-12">
+                {% component 'alignment' %}
+            </div>
+            <div class="col-md-6 col-xs-12">
+                &nbsp;
+            </div>
+        </div>
+    </section>
+
+    <section class="container graphic_svg">
+        {% if is_mobile %}
+        {% partial 'graphic_mobile.htm' %}
+        {% else %}
+        {% partial 'graphic.htm' %}
+        {% endif %}
+
+    </section>
+
+</main>
