@@ -1,6 +1,6 @@
-url = "/best-practices"
+url = "/synergy-framework"
 layout = "default"
-title = "Best practices"
+title = "Synergy framework"
 
 [siteSearchInclude]
 
@@ -39,7 +39,6 @@ templates = "template3"
 description_limit = 0
 ==
 <?php
-
 function onStart(){
     $this['is_mobile'] = false;
     if (class_exists('\Jenssegers\Agent\Agent')) {
@@ -49,7 +48,6 @@ function onStart(){
         }
     }
 }
-
 ?>
 ==
 {% component 'siteSearchInclude' %}
