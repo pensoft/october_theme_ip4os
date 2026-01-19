@@ -37,6 +37,19 @@ $(document).ready(function() {
         }
     });
 
+    // New selectize inputs for sortTarget and sortSource
+    var sortTargetSelect = $('#sortTarget').selectize({
+        onChange: function(value) {
+            updateNewsList();
+        }
+    });
+
+    var sortSourceSelect = $('#sortSource').selectize({
+        onChange: function(value) {
+            updateNewsList();
+        }
+    });
+
     $('#applyFilter').on('click', updateLibraryList());
 
     $('#clearFilter').on('click',function() {
@@ -48,21 +61,27 @@ $(document).ready(function() {
     });
 
     var urlParams = window.location.search.substring(1).split('&');
-    if(urlParams.length){
-        for(i = 0; i < urlParams.length; i++){
+    if (urlParams.length) {
+        for (i = 0; i < urlParams.length; i++) {
             var paramArr = urlParams[i].split('=');
             var paramKey = paramArr[0];
             var paramVal = paramArr[1];
-            if(typeof paramVal !== 'undefined'){
-                var selectize = select[i].selectize;
-                selectize.setValue(paramVal);
-                updateLibraryList();
+            if (typeof paramVal !== 'undefined') {
+                // Handle URL params by key name
+                if (paramKey === 'sortOrder' || paramKey === 'sortType') {
+                    var selectize = select[i].selectize;
+                    selectize.setValue(paramVal);
+                    updateLibraryList();
+                } else if (paramKey === 'sortTarget') {
+                    sortTargetSelect[0].selectize.setValue(paramVal);
+                    updateNewsList();
+                } else if (paramKey === 'sortSource') {
+                    sortSourceSelect[0].selectize.setValue(paramVal);
+                    updateNewsList();
+                }
             }
         }
-
     }
-
-
 
 });
 
@@ -83,6 +102,30 @@ function updateLibraryList() {
             sortType: sortType,
         },
         update: { 'library_records': '#recordsContainer' }
+    });
+}
+
+
+
+function updateNewsList() {
+    var sortTarget = $('#sortTarget').val();
+
+    if($('#sortTarget').length == 0){
+        sortTarget = 0;
+    }
+    var sortSource = $('#sortSource').val();
+
+    if($('#sortSource').length == 0){
+        sortSource = 0;
+    }
+
+
+    $.request('onSearchRecords', {
+        data: {
+            sortSource: sortSource,
+            sortTarget: sortTarget,
+        },
+        update: { 'articlelist': '#recordsContainer' }
     });
 }
 

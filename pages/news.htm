@@ -10,7 +10,7 @@ robot_follow = "follow"
 
 
 [list]
-maxItems = 10
+maxItems = 1
 templates = "template1"
 thumb_width = 250
 thumb_height = 250
@@ -191,8 +191,8 @@ $this['related'] = $related;
 
                         <div class="col-md-2 col-xs-12 start-md center-xs">
                             <div class="sort-field sort-dropdown">
-                                <label for="sortType" class="sr-only">Filter by source</label>
-                                <select id="sortType" name="sortType" aria-label="Filter by source">
+                                <label for="sortSource" class="sr-only">Filter by source</label>
+                                <select id="sortSource" name="sortSource" aria-label="Filter by source">
                                     <option value="0">{{'All sources' |_}}</option>
                                     <option value="1">{{'IP4OS news' |_}}</option>
                                     <option value="2">{{'Other sources' |_}}</option>
@@ -226,113 +226,6 @@ $this['related'] = $related;
             </div>
 
         </div>
-
-
-
-
-        <script>
-            $(document).ready(function() {
-                var search_i = $('#searchInput').selectize({
-                    plugins: ["clear_button", "remove_button", "restore_on_backspace"],
-                    create: true,
-                    valueField: 'value',
-                    labelField: 'text',
-                    searchField: 'text',
-                    load: function (query, callback) {
-                        if (query.length < 1) {
-                            callback([]);
-                            return;
-                        }
-                        $.request('onSearchRecords', {
-                            data: {query: query},
-                            success: function (response) {
-                                callback(response);
-                            }
-                        });
-                    },
-                    render: {
-                        option_create: function (data, escape) {
-                            return '<div class="create">Search for: <strong>' + escape(data.input) + '</strong>&hellip;</div>';
-                        }
-                    },
-                    highlight: true,
-                    sortField: 'text',
-                    loadThrottle: 300,
-                    noResultsText: 'No results found',
-                    onChange: function (value) {
-                        updateNewsList();
-                    }
-                });
-
-
-                var select = $('#sortTarget, #sortType').selectize({
-                    onChange: function(value) {
-                        updateNewsList();
-                    }
-                });
-
-                $('#applyFilter').on('click', updateNewsList());
-
-                $('#clearFilter').on('click',function() {
-                    var selectize = select[0].selectize;
-                    selectize.setValue(0);
-                    updateNewsList();
-                });
-
-                var urlParams = window.location.search.substring(1).split('&');
-                if(urlParams.length){
-                    for(i = 0; i < urlParams.length; i++){
-                        var paramArr = urlParams[i].split('=');
-                        var paramKey = paramArr[0];
-                        var paramVal = paramArr[1];
-                        if(typeof paramVal !== 'undefined'){
-                            var selectize = select[i].selectize;
-                            selectize.setValue(paramVal);
-                            updateNewsList();
-                        }
-                    }
-                }
-            });
-
-
-            function updateNewsList() {
-                var sortType = $('#sortType').val();
-
-                if($('#sortType').length == 0){
-                    sortType = 0;
-                }
-
-                var sortTarget = $('#sortTarget').val();
-
-                $.request('onSearchRecords', {
-                    data: {
-                        sortTarget: sortTarget,
-                        sortType: sortType,
-                    },
-                    update: { 'articlelist': '#recordsContainer' }
-                });
-            }
-
-
-            function getUrlParams(){
-                var params = window.location.search.substring(1).split('&');
-                var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            }
-
-
-            $(document).keydown(function(e) {
-
-                // 191 = /
-                if (e.keyCode === 191) {
-                    e.preventDefault();
-                }
-
-                // 27 = esc
-                if (e.keyCode === 27) {
-                    e.preventDefault();
-                }
-            });
-        </script>
 
         {% endif %}
     </div>

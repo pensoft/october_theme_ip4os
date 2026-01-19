@@ -36,13 +36,7 @@ escape = 1
     <link rel="stylesheet" href="{{ 'assets/css/aos.css'|theme }}">
     <script src="{{ 'assets/js/aos.js'|theme }}"></script>
 
-    {% if this.page.id == 'news' or this.page.id == 'events' %}
-    <link rel="stylesheet" href="{{ 'assets/css/selectize.default.min.css'|theme }}">
-    <script src="{{ 'assets/js/selectize.min.js'|theme }}"></script>
-    <script src="{{ 'assets/js/filter.js'|theme }}"></script>
-    {% endif %}
-
-    {% if this.page.id == 'resources' %}
+    {% if this.page.id == 'news' or this.page.id == 'resources' %}
     <link rel="stylesheet" href="{{ 'assets/css/selectize.default.min.css'|theme }}">
     <script src="{{ 'assets/js/selectize.min.js'|theme }}"></script>
     <script src="{{ 'assets/js/filter.js'|theme }}"></script>
