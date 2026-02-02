@@ -1,0 +1,163 @@
+url = "/training-and-curriculum"
+layout = "default"
+title = "Training and curriculum"
+
+[siteSearchInclude]
+
+[jumbotron level1]
+jumbotron = "level-pilot-learning-lab-institutional-implementation-sprint"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron level2]
+jumbotron = "level-2-curriculum-and-toolbox-reusable-open-education-resources"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron who]
+jumbotron = "who-training"
+title = 1
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron community]
+jumbotron = "community-practice-and-open-invitation"
+title = 1
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron about]
+jumbotron = "training-and-curriculum-about"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+==
+{% component 'siteSearchInclude' %}
+
+<main id="main-content" role="main">
+    <section class="container about" aria-label="">
+        <div class="row between-md around-xs">
+            <div class="col-md-6 col-xs-12">
+                <h1 class="display-1">About</h1>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                {% component 'about' %}
+            </div>
+        </div>
+    </section>
+    <section class="container800 two-level" aria-labelle="">
+        <h1>A Two-Level Training Approach</h1>
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="level-container">
+                    <div class="level_label">LEVEL 1</div>
+                    <div class="title">Pilot Learning Lab – Institutional Implementation Sprint</div>
+                    <div class="row read-more-row">
+                        <a data-toggle="modal"
+                           href="#content-level1"
+                           role="button"
+                           aria-haspopup="dialog"
+                           aria-label="Read more about Pilot Learning Lab – Institutional Implementation Sprint"
+                           class="read-more">{{'Learn more' |_}}</a>
+                    </div>
+                    <div class="control-popup modal fade"
+                         id="content-level1"
+                         tabindex="-1"
+                         role="dialog"
+                         aria-labelledby="modal-title-1"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <button type="button"
+                                            class="close"
+                                            data-dismiss="modal"
+                                            aria-label="Close Pilot Learning Lab – Institutional Implementation Sprint dialog">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                                              <path d="M24.3953 8.13184L8.13184 24.3953" stroke="#199CA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                              <path d="M24.3951 24.3953L8.13162 8.13184" stroke="#199CA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                    </button>
+                                    <div class="label">Level 1</div>
+                                    <h3>Pilot Learning Lab – Institutional Implementation Sprint</h3>
+                                    <div class="level-modal-content">
+                                        {% component 'level1' %}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="level-container">
+                    <div class="level_label">LEVEL 2</div>
+                    <div class="title">Curriculum and Toolbox – Reusable Open Education Resources</div>
+                    <div class="row read-more-row">
+                        <a data-toggle="modal"
+                           href="#content-level2"
+                           role="button"
+                           aria-haspopup="dialog"
+                           aria-label="Read more about Curriculum and Toolbox – Reusable Open Education Resources"
+                           class="read-more">{{'Learn more' |_}}</a>
+                    </div>
+                    <div class="control-popup modal fade"
+                         id="content-level2"
+                         tabindex="-1"
+                         role="dialog"
+                         aria-labelledby="modal-title-2"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <button type="button"
+                                            class="close"
+                                            data-dismiss="modal"
+                                            aria-label="Close Curriculum and Toolbox – Reusable Open Education Resources dialog">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                                            <path d="M24.3953 8.13184L8.13184 24.3953" stroke="#199CA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M24.3951 24.3953L8.13162 8.13184" stroke="#199CA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </button>
+                                    <div class="label">Level 2</div>
+                                    <h3>Curriculum and Toolbox – Reusable Open Education Resources</h3>
+                                    <div class="level-modal-content">
+                                        {% component 'level2' %}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="container800 who">
+        {% component 'who' %}
+    </section>
+
+    <section class="container800 community">
+        {% component 'community' %}
+    </section>
+
+    <section class="container800 explore">
+        <div class="explore_container">
+            <div class="row middle-xs between-md around-xs">
+                <div class="col-md-8 col-xs-12">
+                    Explore the IP4OS Toolbox and join<br> the Community of Practice
+                </div>
+                <div class="col-md-4 col-xs-12 end-md center-xs">
+                    <a href="/get-involved" class="btn btn-primary">Explore</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

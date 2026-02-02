@@ -32,6 +32,10 @@ escape = 1
     <script src="{{ 'assets/js/app.js'|theme }}"></script>
     <script src="{{ 'assets/js/jquery-ui.js'|theme }}"></script>
 
+    {% if this.page.id == 'training-and-curriculum'  %}
+    <script src="{{ 'assets/vendor/bootstrap/js/modal.js'|theme  }}"></script>
+    {% endif %}
+
     <script type="text/javascript" src="{{ 'assets/js/slick.min.js'|theme }}"></script>
     <link rel="stylesheet" href="{{ 'assets/css/aos.css'|theme }}">
     <script src="{{ 'assets/js/aos.js'|theme }}"></script>
