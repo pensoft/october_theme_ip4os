@@ -542,6 +542,7 @@
 
     .container800{
         margin: 0 auto;
+        padding: 0;
     }
 
     h1{
@@ -553,11 +554,10 @@
         line-height: 120%; /* 56.4px */
         letter-spacing: -0.94px;
         max-width: 70%;
-        margin: 40px auto;
+        margin: 25px auto 40px auto!important;
 
         .breakpoint-large-down({
             max-width: 100%;
-            margin: 40px 0;
         });
     }
     .about{
@@ -570,6 +570,12 @@
             });
         }
 
+        .container{
+            padding: 0;
+        }
+    }
+
+    .community{
         .container{
             padding: 0;
         }
@@ -612,17 +618,21 @@
 
     .level-container{
         display: flex;
-        width: 326px;
+        width: calc(~'100% - 1px');
         max-width: calc(~'100% - 46px');
         min-height: 162px;
         height: fit-content;
-        margin-bottom: 40px;
+
         padding: 16px 23px;
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
         border-radius: 10px;
         background: #EFF5F8;
+
+        .breakpoint-large-down({
+            margin-bottom: 40px;
+        });
 
         .level_label{
             background: linear-gradient(90deg, rgba(0, 64, 71, 0.02) 0%, rgba(1, 156, 173, 0.19) 100%);
@@ -949,8 +959,8 @@
         }
     }
 
-
     .explore_container{
+        margin: 55px auto;
         border-radius: 10px;
         background: linear-gradient(271deg, #194D70 0.56%, #246FA2 34.12%, #2D8199 69.13%, #199CA3 106.69%);
         padding: 38px;
