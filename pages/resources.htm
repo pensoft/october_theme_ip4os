@@ -34,6 +34,7 @@ use System\Models\File;
 function onStart(){
 	$this['testimonials'] =  Webinars::where('category_id', 1)->get();
 	$this['webinars'] =  Webinars::where('category_id', 2)->get();
+	$this['deepening_modules'] =  Webinars::where('category_id', 3)->get();
     $this['library'] = Library::orderBy('title', 'asc')->get();
 
     if(get('download')){
@@ -92,6 +93,7 @@ function onDownloadFile(){
                         <li role="presentation" class="active"><a href="#testimonials" role="tab" aria-selected="true" aria-controls="testimonials">Testimonials</a></li>
                         <li role="presentation"><a href="#webinars" role="tab" aria-selected="false" aria-controls="webinars">Webinars</a></li>
                         <li role="presentation"><a href="#papers" role="tab" aria-selected="false" aria-controls="papers">Papers</a></li>
+                        <li role="presentation"><a href="#deepening-modules" role="tab" aria-selected="false" aria-controls="deepening-modules">Deepening modules</a></li>
                     </ul>
                 </div>
             </nav>
@@ -219,6 +221,47 @@ function onDownloadFile(){
                 {% partial 'library_records' records=library %}
             </div>
 
+        </section>
+    </div>
+
+    <div class="container800">
+        <section id="deepening-modules" role="tabpanel" aria-labelledby="deepening-modules-tab">
+            <div class="row mt-4">
+
+                {% set records = deepening_modules %}
+                {% if records.count() %}
+                {% for record in records %}
+                <article class="col-md-6 col-xs-12">
+
+                    {% if record.youtube_url %}
+                    <iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen src="{{record.youtube_url}}" width="100%" height="267" title="{{record.name}} - YouTube video" loading="lazy"></iframe>
+                    {% endif %}
+
+                    {% if record.vimeo_url %}
+                    <iframe width="100%" height="267" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" src="{{record.vimeo_url}}" title="{{record.name}} - Vimeo video" loading="lazy"></iframe>
+                    {% endif %}
+
+                    <h3 class="card_title">{{ record.name|length > 65 ? record.name|striptags|slice(0, 65)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : record.name|striptags|replace({"&nbsp;": " ", ".": ". "})  }}</h3>
+
+                    {% if record.description %}
+                    <p class="card_description">{{ record.description|raw  }}</p>
+                    {% endif %}
+
+                    {% if record.file %}
+                    <div class="links">
+                        <div class="button_su">
+                            <span class="su_button_circle desplode-circle" aria-hidden="true"></span>
+                            <a class="button_su_inner" href="{{ ''| page }}?{{queries}}&download={{record.file.id}}&file_name={{record.name|replace({' ': '_'})}}" aria-label="Download {{record.name}}"><span class="button_text_container"><i class="pr normal p-download" aria-hidden="true"></i>Download</span></a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </article>
+
+                {% endfor %}
+                {% else %}
+                <p role="status">No deepening-modules available</p>
+                {% endif %}
+            </div>
         </section>
     </div>
 </main>
