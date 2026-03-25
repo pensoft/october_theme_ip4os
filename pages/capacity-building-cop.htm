@@ -32,6 +32,7 @@ description_limit = 0
 
 [jumbotron about]
 jumbotron = "training-and-curriculum-about"
+title = 1
 background = "transperant"
 templates = "template3"
 description_limit = 0
@@ -44,15 +45,8 @@ description_limit = 0
         {% component 'community' %}
     </section>
 
-    <section class="container about" aria-label="">
-        <div class="row between-md around-xs">
-            <div class="col-md-6 col-xs-12">
-                <h1 class="display-1">About</h1>
-            </div>
-            <div class="col-md-6 col-xs-12">
-                {% component 'about' %}
-            </div>
-        </div>
+    <section class="container800 about " aria-label="">
+          {% component 'about' %}
     </section>
     <section class="container800 two-level" aria-labelle="">
         <h1>A Two-Level Training Approach</h1>
