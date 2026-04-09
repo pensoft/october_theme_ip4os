@@ -10,6 +10,12 @@ includePageMeta = 1
 escape = 1
 
 [googleTracker]
+
+[jumbotron glossary]
+jumbotron = "glossary-popup"
+background = "transperant"
+templates = "template3"
+description_limit = 0
 ==
 <!DOCTYPE html>
 <html>
@@ -32,7 +38,11 @@ escape = 1
     <script src="{{ 'assets/js/app.js'|theme }}"></script>
     <script src="{{ 'assets/js/jquery-ui.js'|theme }}"></script>
 
-    {% if this.page.id == 'capacity-building-cop'  %}
+    {% if this.page.id == 'capacity-building-cop'
+        or this.page.id == 'home'
+        or this.page.id == 'resources'
+        or this.page.id == 'best-practices'
+    %}
     <script src="{{ 'assets/vendor/bootstrap/js/modal.js'|theme  }}"></script>
     {% endif %}
 
@@ -89,6 +99,40 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </head>
 
 <body>
+
+{% if this.page.id == 'capacity-building-cop'
+or this.page.id == 'home'
+or this.page.id == 'resources'
+or this.page.id == 'best-practices'
+%}
+<button type="button" class="glossary_btn" onclick="toggleGlossary()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M12 7V21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 18C2.73478 18 2.48043 17.8946 2.29289 17.7071C2.10536 17.5196 2 17.2652 2 17V4C2 3.73478 2.10536 3.48043 2.29289 3.29289C2.48043 3.10536 2.73478 3 3 3H8C9.06087 3 10.0783 3.42143 10.8284 4.17157C11.5786 4.92172 12 5.93913 12 7C12 5.93913 12.4214 4.92172 13.1716 4.17157C13.9217 3.42143 14.9391 3 16 3H21C21.2652 3 21.5196 3.10536 21.7071 3.29289C21.8946 3.48043 22 3.73478 22 4V17C22 17.2652 21.8946 17.5196 21.7071 17.7071C21.5196 17.8946 21.2652 18 21 18H15C14.2044 18 13.4413 18.3161 12.8787 18.8787C12.3161 19.4413 12 20.2044 12 21C12 20.2044 11.6839 19.4413 11.1213 18.8787C10.5587 18.3161 9.79565 18 9 18H3Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="glossary_btn_tooltip">Glossary</span>
+</button>
+
+<div class="glossary_modal">
+    <div class="glossary_modal_overlay"></div>
+    <div class="glossary_modal_dialog">
+        <div class="glossary_modal_header">
+            <div class="glossary_modal_header_row">
+                <h3>Glossary</h3>
+                <button type="button" class="glossary_modal_close" onclick="toggleGlossary()" aria-label="Close dialog">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                        <path d="M24.3953 8.13184L8.13184 24.3953" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M24.3951 24.3953L8.13162 8.13184" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="glossary_modal_content">
+            {% component 'glossary' %}
+        </div>
+    </div>
+</div>
+{% endif %}
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PWW5NKQ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

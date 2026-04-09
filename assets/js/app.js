@@ -571,4 +571,31 @@ function scrollToField(errors){
     });
 }
 
+function cleanGlossaryContent(){
+    var titles = document.querySelectorAll('.glossary_modal .glossary_title');
+    titles.forEach(function(el){
+        el.innerHTML = el.innerHTML.replace(/^[""\u201C\u201D]+|[""\u201C\u201D]+$/g, '').replace(/:+\s*$/, '');
+    });
+    var items = document.querySelectorAll('.glossary_modal_content li');
+    items.forEach(function(li){
+        li.childNodes.forEach(function(node){
+            if(node.nodeType === 3){
+                node.textContent = node.textContent.replace(/[""\u201C\u201D]/g, '');
+            }
+        });
+    });
+}
+
+function toggleGlossary(){
+    var modal = document.querySelector('.glossary_modal');
+    if(modal.classList.contains('open')){
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }else{
+        cleanGlossaryContent();
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
 init()
