@@ -922,10 +922,10 @@
                 });
 
                 // Middle column offset (items 3 and 4)
-                &:nth-child(7),
-                &:nth-child(8),
                 &:nth-child(3),
-                &:nth-child(4) {
+                &:nth-child(4),
+                &:nth-child(7),
+                &:nth-child(8){
                     transform: translateY(40px);
                     .breakpoint-large-down({
                         transform: unset;
@@ -938,8 +938,8 @@
                 &:nth-of-type(3):before,
                 &:nth-of-type(4):before,
                 &:nth-of-type(5):before,
-                &:nth-of-type(6):before
-                &:nth-of-type(7):before
+                &:nth-of-type(6):before,
+                &:nth-of-type(7):before,
                 &:nth-of-type(8):before
                 {
                     content: '';
