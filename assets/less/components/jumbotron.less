@@ -922,6 +922,8 @@
                 });
 
                 // Middle column offset (items 3 and 4)
+                &:nth-child(7),
+                &:nth-child(8),
                 &:nth-child(3),
                 &:nth-child(4) {
                     transform: translateY(40px);
@@ -937,6 +939,8 @@
                 &:nth-of-type(4):before,
                 &:nth-of-type(5):before,
                 &:nth-of-type(6):before
+                &:nth-of-type(7):before
+                &:nth-of-type(8):before
                 {
                     content: '';
                     width: 106px;
@@ -973,6 +977,16 @@
 
                 &:nth-of-type(6):before{
                     background: url("../../assets/images/who6.svg") center no-repeat;
+                    background-size: contain;
+                }
+
+                &:nth-of-type(7):before{
+                    background: url("../../assets/images/who1.svg") center no-repeat;
+                    background-size: contain;
+                }
+
+                &:nth-of-type(8):before{
+                    background: url("../../assets/images/who2.svg") center no-repeat;
                     background-size: contain;
                 }
             }
