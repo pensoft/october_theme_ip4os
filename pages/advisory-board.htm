@@ -1,0 +1,174 @@
+url = "/advisory-board"
+layout = "default"
+title = "Advisory Board"
+is_hidden = 0
+robot_index = "index"
+robot_follow = "follow"
+
+[siteSearchInclude]
+
+==
+<?php
+use Pensoft\Cardprofiles\Models\Profiles;
+
+function onStart()
+{
+	$this['profiles'] = Profiles::where('category_id', 3)
+		->orderBy('sort_order')
+		->get();
+}
+?>
+==
+{% component 'siteSearchInclude' %}
+<main id="main-content" role="main">
+    <div class="container">
+        <h1 class="advisory-board__title">{{ this.page.title }}</h1>
+
+        <div class="advisory-board__grid">
+            {% for profile in profiles %}
+            <article class="advisory-card">
+                <div class="advisory-card__image">
+                    <img src="{% if profile.avatar %}{{ profile.avatar.thumb(472, 472, {'mode': 'crop'}) }}{% else %}{{ 'profile.svg'|media }}{% endif %}"
+                         alt="{{ profile.names }}" loading="lazy">
+                </div>
+
+                <div class="advisory-card__info">
+                    <h2 class="advisory-card__name">{{ profile.names }}</h2>
+                    {% if profile.position %}
+                    <p class="advisory-card__position">{{ profile.position }}</p>
+                    {% endif %}
+                </div>
+
+                {% if profile.content %}
+                <button type="button"
+                        class="advisory-card__biography js-biography-open"
+                        data-biography-target="biography-{{ profile.id }}"
+                        aria-haspopup="dialog">
+                    <span>Biography</span>
+                    <svg width="4" height="8" viewBox="0 0 4 8" fill="none" aria-hidden="true" focusable="false">
+                        <path d="M0.5 0.5L3.5 4L0.5 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+
+                <template id="biography-{{ profile.id }}"
+                          data-name="{{ profile.names }}"
+                          data-position="{{ profile.position }}">{{ profile.content|raw }}</template>
+                {% endif %}
+            </article>
+            {% else %}
+            <p class="advisory-board__empty">No advisory board members to display.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="biography_modal" id="biographyModal" hidden>
+        <div class="biography_modal_overlay js-biography-close"></div>
+        <div class="biography_modal_dialog" role="dialog" aria-modal="true" aria-labelledby="biographyModalName">
+            <button type="button" class="biography_modal_close js-biography-close" aria-label="Close dialog">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="M17 1L1 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M17 17L1 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <div class="biography_modal_header">
+                <h2 class="biography_modal_name" id="biographyModalName"></h2>
+                <p class="biography_modal_position"></p>
+            </div>
+
+            <div class="biography_modal_content"></div>
+        </div>
+    </div>
+</main>
+
+<script>
+    (function () {
+        var modal = document.getElementById('biographyModal');
+
+        if (!modal) {
+            return;
+        }
+
+        var dialog = modal.querySelector('.biography_modal_dialog');
+        var nameEl = modal.querySelector('.biography_modal_name');
+        var positionEl = modal.querySelector('.biography_modal_position');
+        var contentEl = modal.querySelector('.biography_modal_content');
+        var closeBtn = modal.querySelector('.biography_modal_close');
+        var lastFocused = null;
+
+        function openModal(trigger) {
+            var source = document.getElementById(trigger.getAttribute('data-biography-target'));
+
+            if (!source) {
+                return;
+            }
+
+            lastFocused = trigger;
+
+            nameEl.textContent = source.getAttribute('data-name') || '';
+
+            var position = source.getAttribute('data-position') || '';
+            positionEl.textContent = position;
+            positionEl.hidden = !position;
+
+            contentEl.innerHTML = '';
+            contentEl.appendChild(source.content.cloneNode(true));
+            contentEl.scrollTop = 0;
+
+            modal.hidden = false;
+            document.body.classList.add('biography-modal-open');
+            closeBtn.focus();
+        }
+
+        function closeModal() {
+            modal.hidden = true;
+            document.body.classList.remove('biography-modal-open');
+            contentEl.innerHTML = '';
+
+            if (lastFocused) {
+                lastFocused.focus();
+                lastFocused = null;
+            }
+        }
+
+        document.querySelectorAll('.js-biography-open').forEach(function (trigger) {
+            trigger.addEventListener('click', function () {
+                openModal(trigger);
+            });
+        });
+
+        modal.querySelectorAll('.js-biography-close').forEach(function (el) {
+            el.addEventListener('click', closeModal);
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !modal.hidden) {
+                closeModal();
+            }
+        });
+
+        // Keep focus inside the dialog while it is open.
+        dialog.addEventListener('keydown', function (event) {
+            if (event.key !== 'Tab') {
+                return;
+            }
+
+            var focusable = dialog.querySelectorAll('a[href], button, [tabindex]:not([tabindex="-1"])');
+
+            if (!focusable.length) {
+                return;
+            }
+
+            var first = focusable[0];
+            var last = focusable[focusable.length - 1];
+
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        });
+    })();
+</script>

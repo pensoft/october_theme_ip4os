@@ -1,0 +1,204 @@
+// Advisory board listing + biography modal.
+// Card metrics follow the Figma frames: 236px avatar, 15px gap to the name,
+// 11px gap to the biography link; modal shell is 522x431 with a 32px close button.
+
+@advisory-card-gap: 24px;
+
+.advisory-board__title {
+    color: @heading-text-color;
+    margin-bottom: 40px;
+}
+
+// 5 across on desktop, degrading to 4 / 3 / 2 / 1 as the viewport narrows.
+.advisory-board__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: @advisory-card-gap;
+    row-gap: 48px;
+
+    .breakpoint-huge-down({
+        grid-template-columns: repeat(4, 1fr);
+    });
+
+    .breakpoint-large-down({
+        grid-template-columns: repeat(3, 1fr);
+    });
+
+    .breakpoint-medium-down({
+        grid-template-columns: repeat(2, 1fr);
+    });
+
+    .breakpoint-small-down({
+        grid-template-columns: 1fr;
+    });
+}
+
+.advisory-board__empty {
+    color: @body-text-color;
+    grid-column: ~"1 / -1";
+}
+
+.advisory-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.advisory-card__image {
+    width: 100%;
+
+    img {
+        width: 100%;
+        aspect-ratio: ~"1 / 1";
+        object-fit: cover;
+        .rounded(10px);
+    }
+}
+
+.advisory-card__info {
+    margin-top: 15px;
+}
+
+.advisory-card__name {
+    color: @heading-text-color;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.advisory-card__position {
+    color: @body-text-color;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 17px;
+    margin: 3px 0 0;
+}
+
+.advisory-card__biography {
+    background: none;
+    border: 0;
+    padding: 0;
+    margin-top: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8.5px;
+    cursor: pointer;
+    color: @link-text-color;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 16px;
+    align-self: flex-start;
+    .transition();
+
+    svg {
+        flex-shrink: 0;
+    }
+
+    &:hover,
+    &:focus-visible {
+        text-decoration: underline;
+    }
+}
+
+// Biography modal
+.biography-modal-open {
+    overflow: hidden;
+}
+
+.biography_modal {
+    position: fixed;
+    inset: 0;
+    z-index: @zindex-modal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.biography_modal_overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: @zindex-modal-backdrop;
+}
+
+.biography_modal_dialog {
+    position: relative;
+    z-index: @zindex-modal;
+    background: #fff;
+    .rounded(12px);
+    .box-shadow(0, 8px, 32px, 0, rgba(0, 0, 0, 0.2));
+
+    width: 522px;
+    max-width: 100%;
+    max-height: 431px;
+    padding: 40px;
+    overflow-y: auto;
+
+    .breakpoint-medium-down({
+        max-height: 80vh;
+        padding: 32px 20px 20px;
+    });
+}
+
+.biography_modal_close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: @heading-text-color;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .transition();
+
+    &:hover {
+        color: @link-text-color;
+    }
+}
+
+.biography_modal_header {
+    margin-bottom: 20px;
+    padding-right: 32px;
+}
+
+.biography_modal_name {
+    color: @heading-text-color;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26px;
+    margin: 0;
+    padding: 0;
+}
+
+.biography_modal_position {
+    color: @body-text-color;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    margin: 4px 0 0;
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.biography_modal_content {
+    color: @body-text-color;
+    font-size: 14px;
+    line-height: 22px;
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
