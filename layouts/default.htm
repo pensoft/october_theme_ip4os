@@ -133,6 +133,25 @@ or this.page.id == 'best-practices'
     </div>
 </div>
 {% endif %}
+
+{% if this.page.id == 'home' %}
+<div class="site_popup" id="sitePopup">
+    <div class="site_popup_overlay" onclick="closeSitePopup()"></div>
+    <div class="site_popup_dialog" role="dialog" aria-modal="true" aria-labelledby="sitePopupTitle">
+        <button type="button" class="site_popup_close" onclick="closeSitePopup()" aria-label="Close dialog">
+            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                <path d="M24.3953 8.13184L8.13184 24.3953" stroke="#009DAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M24.3951 24.3953L8.13162 8.13184" stroke="#009DAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </button>
+        <h3 class="site_popup_title" id="sitePopupTitle">IP4OS Summit: Innovation, Sovereignty and Open Science in Europe</h3>
+        <p>IP4OS is hosting a high-level policy summit to explore how intellectual property, open science, and AI-driven innovation can be better aligned to strengthen Europe's capacity to innovate.</p>
+        <p>The event will take place online and in person at CSIC Brussels.</p>
+        <p>Register <a href="https://us02web.zoom.us/webinar/register/WN__bHkTTMjQQ6SP2IXWo2ltQ#/registration" target="_blank" rel="noopener">here</a> to attend online.</p>
+        <a class="site_popup_btn" href="https://us02web.zoom.us/webinar/register/WN__bHkTTMjQQ6SP2IXWo2ltQ#/registration" target="_blank" rel="noopener">Register</a>
+    </div>
+</div>
+{% endif %}
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PWW5NKQ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

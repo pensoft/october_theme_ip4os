@@ -281,6 +281,8 @@ $(document).ready(function() {
             $(".readmore-link").text("Read less");
         }
     });
+
+    initSitePopup();
 });
 
 
@@ -584,6 +586,73 @@ function cleanGlossaryContent(){
             }
         });
     });
+}
+
+var SITE_POPUP_COOKIE = 'ip4os_summit_popup_closed';
+var SITE_POPUP_COOKIE_DAYS = 365;
+var SITE_POPUP_DELAY = 600;
+
+function getCookie(name){
+    var parts = document.cookie ? document.cookie.split(';') : [];
+    for(var i = 0; i < parts.length; i++){
+        var pair = parts[i].replace(/^\s+/, '');
+        if(pair.indexOf(name + '=') === 0){
+            return decodeURIComponent(pair.substring(name.length + 1));
+        }
+    }
+    return null;
+}
+
+function setCookie(name, value, days){
+    var expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = name + '=' + encodeURIComponent(value) +
+        '; expires=' + expires.toUTCString() +
+        '; path=/; SameSite=Lax';
+}
+
+function closeSitePopup(){
+    var popup = document.getElementById('sitePopup');
+    if(!popup){
+        return;
+    }
+    popup.classList.remove('open');
+    document.body.style.overflow = '';
+    setCookie(SITE_POPUP_COOKIE, '1', SITE_POPUP_COOKIE_DAYS);
+}
+
+function openSitePopup(popup){
+    // The popup is hidden with visibility/opacity rather than display, so the
+    // browser has a rendered "from" state and the fade-in actually animates.
+    popup.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function initSitePopup(){
+    var popup = document.getElementById('sitePopup');
+    if(!popup || getCookie(SITE_POPUP_COOKIE)){
+        return;
+    }
+
+    document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' || e.keyCode === 27){
+            closeSitePopup();
+        }
+    });
+
+    var reveal = function(){
+        window.setTimeout(function(){
+            openSitePopup(popup);
+        }, SITE_POPUP_DELAY);
+    };
+
+    // Wait for the full page load so the fade-in isn't competing with images,
+    // fonts and AOS still settling in.
+    if(document.readyState === 'complete'){
+        reveal();
+    }else{
+        window.addEventListener('load', reveal);
+    }
 }
 
 function toggleGlossary(){
