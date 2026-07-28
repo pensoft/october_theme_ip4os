@@ -19,6 +19,9 @@ window.addEventListener('scroll', function (e) {
 
 
 $(document).ready(function() {
+    // Run first so a later failure in this handler can never swallow the popup.
+    initSitePopup();
+
     // $("nav").removeClass("no-transition");
 	/* MENU */
 	$('.navbar-nav').attr('id', 'menu'); // please don't remove this line
@@ -282,7 +285,6 @@ $(document).ready(function() {
         }
     });
 
-    initSitePopup();
 });
 
 
@@ -591,6 +593,10 @@ function cleanGlossaryContent(){
 var SITE_POPUP_COOKIE = 'ip4os_summit_popup_closed';
 var SITE_POPUP_COOKIE_DAYS = 365;
 var SITE_POPUP_DELAY = 600;
+// Safari (macOS) keeps the window "load" event pending while a third-party
+// iframe — GTM, the Facebook SDK, reCAPTCHA, UserWay — is still stalled, and
+// that can last forever. Never let the popup depend solely on "load".
+var SITE_POPUP_MAX_WAIT = 3000;
 
 function getCookie(name){
     var parts = document.cookie ? document.cookie.split(';') : [];
@@ -640,18 +646,25 @@ function initSitePopup(){
         }
     });
 
+    var revealed = false;
     var reveal = function(){
-        window.setTimeout(function(){
-            openSitePopup(popup);
-        }, SITE_POPUP_DELAY);
+        if(revealed){
+            return;
+        }
+        revealed = true;
+        openSitePopup(popup);
     };
 
-    // Wait for the full page load so the fade-in isn't competing with images,
-    // fonts and AOS still settling in.
+    // Prefer the full page load so the fade-in isn't competing with images,
+    // fonts and AOS still settling in, but fall back to a hard deadline so a
+    // hung third-party iframe can't keep the popup hidden.
     if(document.readyState === 'complete'){
-        reveal();
+        window.setTimeout(reveal, SITE_POPUP_DELAY);
     }else{
-        window.addEventListener('load', reveal);
+        window.addEventListener('load', function(){
+            window.setTimeout(reveal, SITE_POPUP_DELAY);
+        });
+        window.setTimeout(reveal, SITE_POPUP_MAX_WAIT);
     }
 }
 
