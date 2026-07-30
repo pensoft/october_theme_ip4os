@@ -20,23 +20,159 @@ use Pensoft\Media\Models\Pressreleases;
 use Pensoft\Media\Models\PressCategory;
 
 function onStart(){
-$this['categories'] = PressCategory::get();
+$categories = PressCategory::orderBy('sort_order')->orderBy('title')->get();
+$this['categories'] = $categories;
 
-$categoryId = input('categoryId', 'all');
+// Number of press releases per language category, plus the overall total
+$this['counts'] = Pressreleases::selectRaw('category_id, count(*) as total')
+->groupBy('category_id')
+->pluck('total', 'category_id')
+->all();
+$this['total_count'] = Pressreleases::count();
 
-if ($categoryId !== 'all' && !is_numeric($categoryId)) {
-return redirect('media-center/press-releases');
+// The category that stands for the language the site is currently browsed in,
+// e.g. category "German" (or "de") while the active locale is German.
+$localeNames = [];
+if (class_exists('\RainLab\Translate\Classes\Translator')) {
+$localeCode = \RainLab\Translate\Classes\Translator::instance()->getLocale();
+$localeNames[] = $localeCode;
+if (class_exists('\RainLab\Translate\Models\Locale')) {
+$locale = \RainLab\Translate\Models\Locale::findByCode($localeCode);
+if ($locale) {
+$localeNames[] = $locale->name;
+}
+}
+}
+$localeNames = array_map('mb_strtolower', array_filter($localeNames));
+
+$localeCategory = $categories->first(function($category) use ($localeNames) {
+return in_array(mb_strtolower(trim($category->title)), $localeNames, true);
+});
+
+// By default every language is listed; the active locale only decides which tab
+// of a release opens first. ?categoryId=<id> narrows the list to one language.
+$requested = input('categoryId', 'all');
+
+// Anything that is not "all" or an existing category is not a valid language
+if ($requested !== 'all' && !$categories->contains('id', (int) $requested)) {
+return redirect('press-releases');
 }
 
-$this['categoryId'] = $categoryId;
-if ($categoryId === 'all') {
-$records = Pressreleases::orderBy('date', 'desc')->get();
-} else {
-$records = Pressreleases::where('category_id', $categoryId)->get();
+$this['categoryId'] = $requested;
+$this['selected_category'] = $requested === 'all'
+? null
+: $categories->firstWhere('id', (int) $requested);
+
+$applyLanguage = function($query) use ($requested) {
+if ($requested !== 'all') {
+$query->where('category_id', (int) $requested);
+}
+return $query;
+};
+
+// Paginate over release dates, not over rows, so every language version of the
+// same release stays together on one page
+$dates = $applyLanguage(Pressreleases::selectRaw('date'))
+->groupBy('date')
+->orderBy('date', 'desc')
+->paginate(12);
+$dates->appends(['categoryId' => $requested]);
+$this['pagination'] = $dates;
+
+$dateValues = collect($dates->items())->pluck('date');
+$hasUndated = $dateValues->contains(null);
+$dateList = $dateValues->filter()->values()->all();
+
+$records = collect();
+if ($dateList || $hasUndated) {
+$records = $applyLanguage(Pressreleases::with('category'))
+->where(function($query) use ($dateList, $hasUndated) {
+if ($dateList) {
+$query->whereIn('date', $dateList);
+}
+if ($hasUndated) {
+$query->orWhereNull('date');
+}
+})
+->orderBy('date', 'desc')
+->get();
 }
 
-$this['press_items'] = $records;
+// Press releases sharing a date are treated as versions of the same release,
+// one per language
+$groups = [];
+foreach ($records as $record) {
+$key = $record->date ? (string) $record->date : 'undated';
+if (!isset($groups[$key])) {
+$groups[$key] = ['date' => $record->date, 'items' => []];
+}
+$groups[$key]['items'][] = $record;
+}
 
+$displayGroups = [];
+foreach ($groups as $group) {
+$items = collect($group['items'])->sortBy(function($item) {
+return $item->category
+? sprintf('%05d-%s', (int) $item->category->sort_order, $item->category->title)
+: 'zzzzz';
+})->values();
+
+// One tab per language, never one tab per row, so a language that happens to
+// hold two releases of the same date does not produce two identical tabs
+$languages = [];
+foreach ($items as $item) {
+$key = $item->category_id === null ? 'none' : (int) $item->category_id;
+if (!isset($languages[$key])) {
+$languages[$key] = [
+'id' => $item->id,
+'category_id' => $item->category_id,
+'title' => $item->category ? $item->category->title : null,
+'items' => [],
+];
+}
+$languages[$key]['items'][] = $item;
+}
+$languages = array_values($languages);
+
+// A single language means a single tab, which says nothing: render plain cards
+// instead, one per release, so nothing ends up hidden behind a lone tab.
+if (count($languages) < 2) {
+foreach ($items as $item) {
+$displayGroups[] = [
+'date' => $group['date'],
+'languages' => [[
+'id' => $item->id,
+'category_id' => $item->category_id,
+'title' => $item->category ? $item->category->title : null,
+'items' => [$item],
+]],
+'active_id' => $item->id,
+'has_tabs' => false,
+];
+}
+continue;
+}
+
+// Open on the language the site is browsed in when that version exists
+$activeId = $languages[0]['id'];
+if ($localeCategory) {
+foreach ($languages as $language) {
+if ((int) $language['category_id'] === (int) $localeCategory->id) {
+$activeId = $language['id'];
+break;
+}
+}
+}
+
+$displayGroups[] = [
+'date' => $group['date'],
+'languages' => $languages,
+'active_id' => $activeId,
+'has_tabs' => true,
+];
+}
+
+$this['groups'] = $displayGroups;
 }
 ?>
 ==
@@ -48,40 +184,115 @@ $this['press_items'] = $records;
                     <a href="/promotional-materials" aria-label="Back to Promotional Materials">Back</a>
                 </nav>
             </div>
-            <div class="col-xs-11 arrow_project_news">
+            <div class="col-xs-11 arrow_project_news mt-2">
 
-                <div class="category-tabs-container mb-2">
-                    {% if categories.count > 0 %}
-                    <nav class="row category-tabs" id="category-tabs" aria-label="Press release categories">
-                        <a href="{{ 'press-releasses'|page }}?categoryId=all" aria-current="{{ 'all' == categoryId ? 'page' : 'false' }}" aria-label="View all press releases">All Press Releases</a>
-                        {% for category in categories %}
-                        <a href="{{ 'press-releasses'|page }}?categoryId={{ category.id }}" aria-current="{{ category.id == categoryId ? 'page' : 'false' }}" aria-label="View {{ category.title }} press releases">{{ category.title }}</a>
-                        {% endfor %}
-                    </nav>
-                    {% endif %}
-                </div>
-
-                <div class="row">
-                    {% for record in press_items %}
+                <div class="row" aria-live="polite" aria-atomic="true">
+                    {% for group in groups %}
                     {% spaceless %}
-                    <article class="col-md-12 col-xs-12 press-relies-item">
-                        <time class="date" datetime="{{record.date|date('Y-m-d')}}">{{record.date|date('j F Y')}}</time>
-                        <h3 class="card-title">{{record.name}}</h3>
-                        <div class="body">{{record.description | raw}}</div>
-                        <div class="row link mt-1">
-                            {% for link in record.link %}
-                            <a href="{{link.url}}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-right: 10px;" aria-label="{{link.text}} (opens in new window)">{{link.text}}<span class="sr-only"> (opens in new window)</span></a>
+                    <article class="col-md-12 col-xs-12 press-relies-item" {% if group.has_tabs %}data-language-tabs{% endif %}>
+                        {% if group.date %}
+                        <time class="date" datetime="{{group.date|date('Y-m-d')}}">{{group.date|date('j F Y')}}</time>
+                        {% endif %}
+
+                        {% if group.has_tabs %}
+                        <div class="language-tabs" role="tablist" aria-label="Language versions of this press release">
+                            {% for language in group.languages %}
+                            <button type="button"
+                                    role="tab"
+                                    id="pr-tab-{{language.id}}"
+                                    class="language-tab {{ language.id == group.active_id ? 'active' : '' }}"
+                                    aria-controls="pr-panel-{{language.id}}"
+                                    aria-selected="{{ language.id == group.active_id ? 'true' : 'false' }}"
+                                    tabindex="{{ language.id == group.active_id ? '0' : '-1' }}">{{ language.title ?: 'Original'|_ }}</button>
                             {% endfor %}
                         </div>
+                        {% endif %}
+
+                        {% for language in group.languages %}
+                        <div class="press-release-version"
+                             id="pr-panel-{{language.id}}"
+                             {% if group.has_tabs %}role="tabpanel" aria-labelledby="pr-tab-{{language.id}}"{% endif %}
+                             {% if group.has_tabs and language.id != group.active_id %}hidden{% endif %}>
+                            {% for item in language.items %}
+                            <h3 class="card-title">{{item.name}}</h3>
+                            <div class="body">{{item.description | raw}}</div>
+                            <div class="row link mt-1">
+                                {% for link in item.link %}
+                                <a href="{{link.url}}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-right: 10px;" aria-label="{{link.text}} (opens in new window)">{{link.text}}<span class="sr-only"> (opens in new window)</span></a>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
                     </article>
                     {% endspaceless %}
                     {% else %}
-                    <p role="status">No press releases</p>
+                    <p role="status">
+                        {% if selected_category %}
+                        {{ 'No press releases in' |_ }} {{ selected_category.title }}
+                        {% else %}
+                        {{ 'No press releases' |_ }}
+                        {% endif %}
+                    </p>
                     {% endfor %}
                 </div>
-                <div class="row">
-                    {{ records.render|raw }}
-                </div>
+                <nav class="row" aria-label="Pagination">
+                    {{ pagination.render|raw }}
+                </nav>
+
+                <script>
+                    (function () {
+                        var releases = document.querySelectorAll('.press-relies-item[data-language-tabs]');
+
+                        Array.prototype.forEach.call(releases, function (release) {
+                            var tabs = release.querySelectorAll('[role="tab"]');
+
+                            function activate(tab, moveFocus) {
+                                Array.prototype.forEach.call(tabs, function (candidate) {
+                                    var selected = candidate === tab;
+                                    var panel = release.querySelector('#' + candidate.getAttribute('aria-controls'));
+
+                                    candidate.setAttribute('aria-selected', selected ? 'true' : 'false');
+                                    candidate.setAttribute('tabindex', selected ? '0' : '-1');
+                                    candidate.classList.toggle('active', selected);
+
+                                    if (panel) {
+                                        panel.hidden = !selected;
+                                    }
+                                });
+
+                                if (moveFocus) {
+                                    tab.focus();
+                                }
+                            }
+
+                            Array.prototype.forEach.call(tabs, function (tab, index) {
+                                tab.addEventListener('click', function () {
+                                    activate(tab, false);
+                                });
+
+                                tab.addEventListener('keydown', function (event) {
+                                    var target = null;
+
+                                    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+                                        target = tabs[(index + 1) % tabs.length];
+                                    } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+                                        target = tabs[(index - 1 + tabs.length) % tabs.length];
+                                    } else if (event.key === 'Home') {
+                                        target = tabs[0];
+                                    } else if (event.key === 'End') {
+                                        target = tabs[tabs.length - 1];
+                                    }
+
+                                    if (target) {
+                                        event.preventDefault();
+                                        activate(target, true);
+                                    }
+                                });
+                            });
+                        });
+                    })();
+                </script>
             </div>
         </div>
     </div>
