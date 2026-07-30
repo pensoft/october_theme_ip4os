@@ -113,15 +113,16 @@ return $item;
         <h2 id="upcoming-events-heading" class="display-1">Upcoming events on Open Science and Intellectual Property</h2>
         <div class="row event-items">
             {% for event in entries %}
+            {% set url = event.url ?  event.url : '/events/' ~ event.slug %}
             <article class="col-md-4 col-xs-12">
                 <div class="event_item">
                     <div>
                         <time class="news-date" datetime="{{event.start|date('Y-m-d')}}">{{ event.start|date('d M Y') }}</time>
-                        <a href="{{'events'|page}}/{{event.slug}}" aria-label="Read more about {{event.title}}">
+                        <a href="{{url}}" aria-label="Read more about {{event.title}}">
                             <h3 class="news-title">{{ event.title|length > 70 ? event.title|slice(0, 70)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : event.title|replace({"&nbsp;": " ", ".": ". "})  }}</h3>
                         </a>
                     </div>
-                    <a href="{{'events'|page}}/{{event.slug}}" class="read-more" aria-label="Read more about {{event.title}}">Read more</a>
+                    <a href="{{url}}" class="read-more" aria-label="Read more about {{event.title}}">Read more</a>
                 </div>
             </article>
             {% endfor %}
