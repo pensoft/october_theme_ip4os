@@ -81,13 +81,12 @@ return Response::download($pathToFile, $fileName, $headers);
         <div class="row">
             {% for record in records %}
             <div class="col-md-6 col-xs-12 mb-1">
-                {{form_open({ request: 'onDownloadFile' }) }}
-                <input type="hidden" value="{{record.file.id}}" name="id">
-                <button class="flyer-container {{record.name}}" type="submit" data-attach-loading aria-label="Download {{record.title}}">
+                <a class="flyer-container matomo_download {{record.name}}"
+                   href="{{ ''|page }}?download={{record.file.id}}&file_name={{record.title|replace({' ': '_'})|url_encode}}"
+                   aria-label="Download {{record.title}}">
                     <img src="{{record.image.path}}" alt="Preview of {{record.title}}" loading="lazy">
                     <span class="name_label">{{record.title}}</span>
-                </button>
-                {{ form_close() }}
+                </a>
             </div>
             {% endfor %}
         </div>
