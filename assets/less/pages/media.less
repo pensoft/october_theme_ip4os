@@ -28,7 +28,7 @@
         width: 609px;
         height: 409px;
         object-fit: cover;
-        object-position: left 50% bottom -130px;
+        object-position: bottom;
         max-width: 100%;
         border-radius: 10px;
         -webkit-transition: all 0.5s ease; /* Safari and Chrome */
@@ -53,6 +53,13 @@
         // font-weight: 500;
     }
 
+}
+
+// Role model posters only - shifts the crop down to reveal the top of the poster
+.flyer-container.role_model_poster{
+    img{
+        object-position: left 50% bottom -130px;
+    }
 }
 
 .newsletters{

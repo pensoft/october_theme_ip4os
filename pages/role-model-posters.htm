@@ -78,13 +78,22 @@ return Response::download($pathToFile, $fileName, $headers);
         </div>
 
         {% if records.count() %}
+        {% set previewOptions = {'mode': 'auto', 'quality': 85, 'format': 'jpg'} %}
         <div class="row">
             {% for record in records %}
             <div class="col-md-6 col-xs-12 mb-1">
-                <a class="flyer-container matomo_download {{record.name}}"
+                <a class="flyer-container role_model_poster matomo_download {{record.name}}"
                    href="{{ ''|page }}?download={{record.file.id}}&file_name={{record.name|replace({' ': '_'})|url_encode}}"
                    aria-label="Download {{record.name}}">
-                    <img src="{{record.presentation_image.path}}" alt="Preview of {{record.name}}" loading="lazy">
+                    {% if record.presentation_image %}
+                    {% set preview = record.presentation_image.path %}
+                    <img src="{{ preview|resize(640, null, previewOptions) }}"
+                         srcset="{{ preview|resize(640, null, previewOptions) }} 640w,
+                                 {{ preview|resize(1280, null, previewOptions) }} 1280w"
+                         sizes="(max-width: 991px) 100vw, 609px"
+                         width="609" height="409"
+                         alt="Preview of {{record.name}}" loading="lazy" decoding="async">
+                    {% endif %}
                     <span class="name_label">{{record.name}}</span>
                 </a>
             </div>
