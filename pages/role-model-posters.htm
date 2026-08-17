@@ -87,12 +87,8 @@ return Response::download($pathToFile, $fileName, $headers);
                    aria-label="Download {{record.name}}">
                     {% if record.presentation_image %}
                     {% set preview = record.presentation_image.path %}
-                    <img src="{{ preview|resize(640, null, previewOptions) }}"
-                         srcset="{{ preview|resize(640, null, previewOptions) }} 640w,
-                                 {{ preview|resize(1280, null, previewOptions) }} 1280w"
-                         sizes="(max-width: 991px) 100vw, 609px"
-                         width="609" height="409"
-                         alt="Preview of {{record.name}}" loading="lazy" decoding="async">
+                    <img src="{{ preview|crop_image|resize(609, 409, { mode: 'crop' }) }}"
+                         alt="Preview of {{record.name}}">
                     {% endif %}
                     <span class="name_label">{{record.name}}</span>
                 </a>
