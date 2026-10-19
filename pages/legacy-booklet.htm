@@ -1,0 +1,89 @@
+url = "/legacy-booklet"
+layout = "default"
+title = "Legacy booklet"
+
+[builderList mediaBooksList]
+modelClass = "pensoft\Media\Models\Books"
+scope = "-"
+scopeValue = "{{ :scope }}"
+displayColumn = "title"
+noRecordsMessage = "No records found"
+detailsPage = "-"
+detailsUrlParameter = "id"
+pageNumber = "{{ :page }}"
+==
+<?php
+use Pensoft\Media\Models\Books;
+use System\Models\File;
+
+function onStart(){
+	$this['mediaBooksList'] =  Books::orderBy('sort_order')->get();
+	if(get('download')){
+		$file = File::find((int)get('download'));
+		$file_name = $file->getLocalPath();
+$recordName = get('file_name') ? get('file_name') : 'IP4OS_legacy_booklet';
+$ext= $file->getExtension();
+
+if (file_exists($file_name)) {
+header('Content-Description: File Transfer');
+header('Content-Type: application/octet-stream');
+header("Content-Type: application/force-download");
+header('Content-Disposition: attachment; filename='.$recordName .'.'. $ext);
+header('Content-Transfer-Encoding: binary');
+header('Expires: 0');
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+header('Pragma: public');
+header('Content-Length: ' . filesize($file_name));
+ob_clean();
+flush();
+readfile($file_name);
+exit();
+}
+return Redirect::to('/legacy-booklet');
+}
+
+}
+?>
+==
+<main id="main-content" role="main">
+    <div class="container">
+        {% set records = mediaBooksList %}
+        {% set noRecordsMessage = mediaBooksList.noRecordsMessage %}
+
+        <div class="row">
+            <div class="col-xs-12">
+                <nav class="go_back mt-2 mb-2" aria-label="Breadcrumb">
+                    <a href="/promotional-materials" aria-label="Back to Promotional Materials">Back</a>
+                </nav>
+            </div>
+        </div>
+
+        {% if records.count() %}
+        <div class="row">
+            {% for record in records %}
+            <div class="col-md-6 col-xs-12 mb-1">
+                {% if record.file %}
+                <a class="flyer-container matomo_download"
+                   href="{{ ''|page }}?download={{record.file.id}}&file_name={{record.title|replace({' ': '_'})|url_encode}}"
+                   aria-label="Download {{record.title}}">
+                {% else %}
+                <a class="flyer-container" href="{{record.url}}" target="_blank" rel="noopener noreferrer"
+                   aria-label="View {{record.title}} (opens in new window)">
+                {% endif %}
+                    {% if record.cover %}
+                    <img src="{{record.cover.path}}" alt="Preview of {{record.title}}" loading="lazy">
+                    {% endif %}
+                    <span class="name_label">{{record.title}}</span>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-xs-12">
+                <p role="status">{{noRecordsMessage}}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</main>
